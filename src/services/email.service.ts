@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
-import Handlebars from 'handlebars';
-import { welcomeTemplate } from '../templates/emails/welcome.template';
+import handlebars from 'handlebars';
+import path from 'path';
+import fs from 'fs';
 
 export class EmailService {
     private transporter: nodemailer.Transporter;
@@ -9,25 +10,48 @@ export class EmailService {
         this.transporter = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
             port: Number(process.env.SMTP_PORT),
-            secure: false,
+            secure: true,
             auth: {
                 user: process.env.SMTP_USER,
                 pass: process.env.SMTP_PASS
             }
         });
+
+        // Verify connection
+        this.transporter.verify((error) => {
+            if (error) {
+                console.log('SMTP Error:', error);
+            } else {
+                console.log('SMTP Server ready');
+            }
+        });
     }
 
     async sendCredentials(email: string, username: string, password: string): Promise<void> {
-        const template = Handlebars.compile(welcomeTemplate.template);
-        const html = template({ username, password });
+        try {
+            console.log('Starting email send process...');
+            const templatePath = path.join(__dirname, '../templates/credentials.hbs');
+            console.log('Template path:', templatePath);
+            
+            const source = fs.readFileSync(templatePath, 'utf-8');
+            const template = handlebars.compile(source);
+            
+            const html = template({
+                username,
+                password
+            });
 
-        const mailOptions = {
-            from: process.env.SMTP_USER,
-            to: email,
-            subject: welcomeTemplate.subject,
-            html
-        };
-
-        await this.transporter.sendMail(mailOptions);
+            const result = await this.transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to: email,
+                subject: 'Your Theralink Account Credentials',
+                html
+            });
+            
+            console.log('Email sent:', result);
+        } catch (error) {
+            console.error('Email sending failed:', error);
+            throw error;
+        }
     }
 }

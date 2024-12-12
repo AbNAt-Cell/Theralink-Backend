@@ -8,8 +8,17 @@ import {
     generateToken 
 } from '../utils/auth.utils';
 import { ILoginRequest, ISignupRequest } from '../interfaces/auth.interfaces';
+import { EmailService } from '../services/email.service';
+
 
 export class AuthController {
+    private emailService: EmailService;
+
+    constructor() {
+        this.emailService = new EmailService();
+        console.log('Email service initialized');  // Add this log
+    }
+
     signup = async (req: Request<{}, {}, ISignupRequest>, res: Response): Promise<Response> => {
         try {
             const { email, role } = req.body;
@@ -34,6 +43,11 @@ export class AuthController {
 
             const token = generateToken(user);
 
+            // Send email with credentials
+            console.log('Attempting to send email...');
+            await this.emailService.sendCredentials(email, username, password);
+            console.log('Email sent successfully');
+
             return res.status(201).json({
                 user: {
                     id: user.id,
@@ -50,10 +64,10 @@ export class AuthController {
                 token
             });
         } catch (error) {
+            console.error('Signup error:', error);
             return res.status(500).json({ error: 'Failed to create user' });
         }
     };
-
     login = async (req: Request<{}, {}, ILoginRequest>, res: Response): Promise<Response> => {
         try {
             const { username, password } = req.body;
