@@ -1,7 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validateRequest } from '../middleware/validate.middleware';
-import { signupSchema, loginSchema } from '../validators/auth.validator';
+import { signupSchema, loginSchema, forgotPasswordSchema,resetPasswordSchema } from '../validators/auth.validator';
+
 
 const router = Router();
 const controller = new AuthController();
@@ -19,6 +20,23 @@ router.post('/login',
         void controller.login(req, res);
     }
 );
+
+router.post(
+    '/forgot-password', 
+    validateRequest(forgotPasswordSchema), 
+    (req: Request, res: Response): void => {
+        void controller.forgotPassword(req, res);
+    }
+);
+
+router.post(
+    '/reset-password', 
+    validateRequest(resetPasswordSchema), 
+    (req: Request, res: Response): void => {
+        void controller.resetPassword(req, res);
+    }
+);
+
 
 export default router;
 
@@ -145,4 +163,54 @@ export default router;
  *                   $ref: '#/components/schemas/User'
  *                 token:
  *                   type: string
+ */
+
+// Add new endpoints
+
+/**
+ * @swagger
+ * /api/auth/forgot-password:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Request password reset
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       200:
+ *         description: Reset email sent successfully
+ * 
+ * /api/auth/reset-password:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Reset password with token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *               - password
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 example: "reset-token"
+ *               password:
+ *                 type: string
+ *                 minLength: 8
+ *                 example: "newSecurepassword1"
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
  */

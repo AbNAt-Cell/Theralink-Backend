@@ -9,6 +9,7 @@ import {
 } from '../utils/auth.utils';
 import { ILoginRequest, ISignupRequest } from '../interfaces/auth.interfaces';
 import { EmailService } from '../services/email.service';
+import { generateResetToken } from '../utils/auth.utils';
 
 
 export class AuthController {
@@ -99,4 +100,66 @@ export class AuthController {
             return res.status(500).json({ error: 'Login failed' });
         }
     };
-}
+
+    forgotPassword = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+            const user = await prisma.user.findUnique({ where: { email } });
+            
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            const resetToken = generateResetToken();
+            const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
+
+            await prisma.user.update({
+                where: { email },
+                data: { resetToken, resetTokenExpiry }
+            });
+
+            await this.emailService.sendPasswordReset(email, resetToken);
+
+            return res.status(200).json({ message: 'Password reset email sent' });
+        } catch (error) {
+            console.error('Forgot password error:', error);
+            return res.status(500).json({ error: 'Failed to process request' });
+        }
+    };
+
+    resetPassword = async (req: Request, res: Response) => {
+        try {
+            const { token, password } = req.body;
+            
+            const user = await prisma.user.findFirst({
+                where: {
+                    resetToken: token,
+                    resetTokenExpiry: { gt: new Date() }
+                }
+            });
+    
+            if (!user) {
+                return res.status(400).json({ error: 'Invalid or expired token' });
+            }
+    
+            const hashedPassword = await hashPassword(password);
+    
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    password: hashedPassword,
+                    resetToken: null,
+                    resetTokenExpiry: null
+                }
+            });
+    
+            // Send confirmation email
+            await this.emailService.sendPasswordChangeConfirmation(user.email);
+    
+            return res.status(200).json({ message: 'Password updated successfully' });
+        } catch (error) {
+            console.error('Reset password error:', error);
+            return res.status(500).json({ error: 'Failed to reset password' });
+        }
+    };
+}    

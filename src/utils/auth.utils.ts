@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { IUser } from '../interfaces/auth.interfaces';
+import crypto from 'crypto';
+
 
 export const generateUsername = (email: string): string => {
     const prefix = email.split('@')[0]
@@ -64,4 +66,9 @@ export const generateToken = (user: IUser): string => {
             algorithm: 'HS256'
         }
     );
+};
+
+// Add to existing auth.utils.ts
+export const generateResetToken = (): string => {
+    return crypto.randomBytes(32).toString('hex');
 };

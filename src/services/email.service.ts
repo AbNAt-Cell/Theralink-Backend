@@ -54,4 +54,40 @@ export class EmailService {
             throw error;
         }
     }
+
+    async sendPasswordReset(email: string, token: string): Promise<void> {
+        const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+        
+        const templatePath = path.join(__dirname, '../templates/reset-password.hbs');
+        const source = fs.readFileSync(templatePath, 'utf-8');
+        const template = handlebars.compile(source);
+        
+        const html = template({ resetLink });
+    
+        await this.transporter.sendMail({
+            from: process.env.SMTP_USER,
+            to: email,
+            subject: 'Reset Your Theralink Password',
+            html
+        });
+    }
+
+    async sendPasswordChangeConfirmation(email: string): Promise<void> {
+        const templatePath = path.join(__dirname, '../templates/password-changed.hbs');
+        const source = fs.readFileSync(templatePath, 'utf-8');
+        const template = handlebars.compile(source);
+        
+        const html = template({
+            supportUrl: `${process.env.FRONTEND_URL}/support`
+        });
+    
+        await this.transporter.sendMail({
+            from: process.env.SMTP_USER,
+            to: email,
+            subject: 'Your Theralink Password Has Been Changed',
+            html
+        });
+    }
+    
+    
 }
