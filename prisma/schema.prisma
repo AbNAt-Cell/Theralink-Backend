@@ -20,7 +20,7 @@ model User {
 
   // Relations
   appointments  Appointment[]  // A user (healthcare provider) can have many appointments
-
+  diagnosis   Diagnosis[]
   // Other fields based on your admin data management requirements
 }
 
@@ -34,10 +34,32 @@ enum Gender {
   FEMALE
 }
 
+enum Race {
+  AFRICAN
+  WHITE
+  ASIAN
+}
+
 enum AppointmentStatus {
   PENDING
-  PENDING
+  CONFIRMED
   CANCELLED
+}
+
+enum insuranceStatus {
+  PRIMARY
+  SECONDARY
+  TERTIARY
+}
+
+
+enum eligibilityStatus {
+ PENDING        
+  ELIGIBLE     
+  INELIGIBLE  
+  UNDER_REVIEW 
+  EXPIRED  
+  REVOKED  
 }
 
 
@@ -45,19 +67,35 @@ model Patient {
   id            String    @id @default(uuid())
   firstName     String
   lastName      String
+  middleName      String?
+  nickName      String?
+  suffix      String?
   email         String    @unique
   phone         String
   gender        Gender
+  race        Race?
+  startDate     DateTime?
   dateOfBirth   DateTime
-  address       String
-  medicalHistory Json?    // Optional medical history
-  intakeForm    IntakeForm?  // One intake form per patient
-  
+  address       Json?
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-
-  // Relation to appointments
-  appointments  Appointment[]  // A patient can have many appointments
+  medicalHistory MedicalHistory[] 
+  appointments  Appointment[]
+  insurance     Insurance[] 
+  eligibility   Eligibility[] 
+  diagnosis   Diagnosis[]
+  ledger Ledger[]
+  medication Medication[]
+  medicationAdminstration MedicationAdminstration[]
+  vitals  Vitals[]
+  document Document[]
+  service Service[]
+  physician Physician[]
+  background Background[]
+  contact Contact[]
+  immunization Immunization[]
+  patientFile PatientFile[]
 }
 
 model Appointment {
@@ -77,20 +115,266 @@ model Appointment {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
+model MedicalHistory {
+  id            String     @id @default(uuid())
+  provider      String   
+  policyNumber  String     @unique
+  startDate     DateTime   
+  endDate       DateTime? 
+  status        insuranceStatus
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  patientId     String
+  patient       Patient    @relation(fields: [patientId], references: [id])
+}
+model Insurance {
+  id            String     @id @default(uuid())
+  provider      String   
+  policyNumber  String     @unique
+  startDate     DateTime   
+  endDate       DateTime? 
+  status        insuranceStatus
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  patientId     String
+  patient       Patient    @relation(fields: [patientId], references: [id])
+  eligibility   Eligibility[] 
+}
+
+model Eligibility {
+  id            String     @id @default(uuid())
+  patientId     String
+  insuranceId   String
+  eligibilityStatus    eligibilityStatus @default(PENDING)   
+  checkedAt     DateTime   
+  notes         String?   
+  
+  patient       Patient    @relation(fields: [patientId], references: [id])
+  insurance     Insurance  @relation(fields: [insuranceId], references: [id])
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Diagnosis {
+  id          String    @id @default(uuid())
+  patientId   String
+  doctorId    String
+  description String
+  diagnosisDate DateTime @default(now())
+
+  patient     Patient    @relation(fields: [patientId], references: [id])
+  doctor      User      @relation(fields: [doctorId], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Document {
+  id          String   @id @default(uuid())
+  patientId   String
+  filePath    String
+  fileType    String
+  description String?
+  uploadedBy  String
+
+  patient     Patient   @relation(fields: [patientId], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Ledger {
+  id          String   @id @default(uuid())
+  patientId   String
+  description String
+  paymentType String
+  amount      Float
+  ledgerDate DateTime @default(now())
+
+  patient     Patient   @relation(fields: [patientId], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Medication {
+  id          String   @id @default(uuid())
+  patientId   String
+  name String
+  route String
+  purpose String
+  prescriber String
+  frequency      Float
+  startDate DateTime
+  endDate DateTime
+
+  patient     Patient   @relation(fields: [patientId], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model MedicationAdminstration {
+  id          String   @id @default(uuid())
+
+  name String
+  route String
+  notes String
+  initials String
+  frequency      Float
+  administeredDate DateTime
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Vitals {
+  id          String   @id @default(uuid())
+  bpSys       Float
+  bpDias      Float
+  temperature Float
+  pulseRate Float
+  respiratoryRate Float
+  weight Float
+  height Float
+  recordDate DateTime
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  cost        Float
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
 
 
+model Physician {
+  id            String    @id @default(uuid())
+  firstName     String
+  lastName      String
+  phone         String
+  
+  address       String
+  comment       String
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+model Background {
+  id                 String       @id @default(uuid())
+  patientId          String
+  education          Json         
+  medicationHistory  Json       
+  socialDeterminants Json         
 
-model IntakeForm {
-  id         String   @id @default(uuid())
-  patientId  String   @unique
-  patient    Patient  @relation(fields: [patientId], references: [id])
+  patient            Patient      @relation(fields: [patientId], references: [id])
 
-  medicalHistory Json?
-  allergies      Json?
-  currentMedications Json?
-  emergencyContactName String?
-  emergencyContactPhone String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+model Immunization {
+  id           String   @id @default(uuid())
+  patientId    String
+  vaccineName  String   
+  manufacturer  String   
+  lotNumber  String   
+  adminstrationSite  String   
+  rejectedReason  String? 
+  isRejected  Boolean?   
+  immunization  String?   
+  dose         Int     
+  dateAdministered DateTime 
+  dateExpired DateTime 
+  administeredBy String   
+  comments        String? 
+  patient      Patient  @relation(fields: [patientId], references: [id])
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PatientFile {
+  id           String   @id @default(uuid())
+  patientId    String
+  fileName     String   // Name of the file
+  fileType     String   // Type of file (e.g., "pdf", "jpeg")
+  fileUrl      String   // URL or path where the file is stored
+  description  String?  // Optional description of the file content
+  uploadedBy   String   // Who uploaded the file (e.g., admin, doctor)
+  patient      Patient  @relation(fields: [patientId], references: [id])
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Contact {
+  id           String    @id @default(uuid())
+  patientId    String
+  parentContact ParentContact[]
+  collateralContact CollateralContact[]
+  contactNote ContactNote[]
+  patient      Patient   @relation(fields: [patientId], references: [id])
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+
+model ParentContact {
+  id           String    @id @default(uuid())
+  contactId    String
+  firstName     String
+  lastName      String
+  relationship String   
+  phone        String
+  email        String?
+  city      String?   
+  state      String?   
+
+  contact      Contact   @relation(fields: [contactId], references: [id])
 
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
+
+model CollateralContact {
+  id           String    @id @default(uuid())
+  contactId    String
+  firstName     String
+  lastName      String
+  phone        String
+  email        String?
+  contact      Contact   @relation(fields: [contactId], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model ContactNote {
+  id           String    @id @default(uuid())
+  contactId    String
+  firstName     String
+  lastName      String
+  phone        String
+  email        String?
+  contact      Contact   @relation(fields: [contactId], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+

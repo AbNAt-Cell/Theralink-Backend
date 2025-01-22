@@ -1,10 +1,12 @@
-import { Request, Response } from "express";
+import { Request as ExpressRequest, Response } from "express";
 import prisma from "../config/database";
-import { IAppointment } from "../interfaces/appointment.interfaces";
 import { IUser } from "src/interfaces/auth.interfaces";
+interface CustomInterface extends ExpressRequest {
+  user?:IUser
+}
 
 export class AppointmentController {
-  async createAppointment(req: Request<{}, {}, IAppointment>, res: Response) {
+  async createAppointment(req: CustomInterface, res: Response) {
     try {
       const { date, status, patientid, ...rest } = req.body;
       const user = req.user as IUser | undefined;
@@ -48,7 +50,7 @@ export class AppointmentController {
     }
   }
 
-  async getAppointments(req: Request, res: Response) {
+  async getAppointments(req: CustomInterface, res: Response) {
     const user = req.user as IUser | undefined;
     const { page = "1", limit = "10" } = req.query;
 
@@ -80,7 +82,7 @@ export class AppointmentController {
     }
   }
 
-  async getAppointmentById(req: Request, res: Response) {
+  async getAppointmentById(req: CustomInterface, res: Response) {
     try {
       const { id } = req.params;
       const Appointment = await prisma.appointment.findUnique({
@@ -98,7 +100,7 @@ export class AppointmentController {
     }
   }
 
-  async updateAppointment(req: Request, res: Response) {
+  async updateAppointment(req: CustomInterface, res: Response) {
     try {
       const { id } = req.params;
       const { dateOfBirth, ...rest } = req.body;
@@ -121,7 +123,7 @@ export class AppointmentController {
     }
   }
 
-  async deleteAppointment(req: Request, res: Response) {
+  async deleteAppointment(req: CustomInterface, res: Response) {
     try {
       const { id } = req.params;
       await prisma.appointment.delete({
