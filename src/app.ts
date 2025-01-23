@@ -1,5 +1,5 @@
-import swaggerUi from "swagger-ui-express";
-import { specs } from "./config/swagger";
+// import swaggerUi from "swagger-ui-express";
+// import { specs } from "./config/swagger";
 import express from "express";
 import cors from "cors";
 // import authRoutes from "./routes/auth.routes";
