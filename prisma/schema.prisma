@@ -59,7 +59,7 @@ model User {
 
   // Relations
   appointments  Appointment[]  // A user (healthcare provider) can have many appointments
-  diagnosis   Diagnosis[]
+  // diagnosis   Diagnosis[]
   // Other fields based on your admin data management requirements
 }
 model Patient {
@@ -164,13 +164,9 @@ model Eligibility {
 model Diagnosis {
   id          String    @id @default(uuid())
   patientId   String
-  doctorId    String
   description String
   diagnosisDate DateTime @default(now())
-
   patient     Patient    @relation(fields: [patientId], references: [id])
-  doctor      User      @relation(fields: [doctorId], references: [id])
-
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

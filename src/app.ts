@@ -7,6 +7,7 @@ import patientRoutes from './routes/patient.routes';
 import appointmentRoutes from './routes/appointment.routes';
 import insuranceRoutes from './routes/insurance.routes';
 import medicalHistoryRoutes from './routes/medicalHistory.routes';
+import diagnosisRoutes from './routes/diagnosis.routes';
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/insurance', insuranceRoutes);
 app.use('/api/medicalHistory', medicalHistoryRoutes);
+app.use('/api/diagnosis', diagnosisRoutes);
 // Health check route
 app.get('/', (_req, res) => {
     res.json({ status: 'API is running' });
