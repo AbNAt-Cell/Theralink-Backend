@@ -1,16 +1,16 @@
 import { Router } from 'express';
 import { MedicalHistoryController } from '../controllers/medicalHistory.controller';
 import { validateRequest } from '../middleware/validate.middleware';
-import { MedicalHistorySchema } from 'src/validators/medicalHistory.validator';
+import { medicalHistorySchema } from '../validators/medicalHistory.validator';
 // import { insSchema } from '../validators/in.validator';
 
 const router = Router();
 const controller = new MedicalHistoryController();
 
-router.post('/', validateRequest(MedicalHistorySchema), (req, res) => void controller.createMedicalHistory(req, res));
+router.post('/', validateRequest(medicalHistorySchema), (req, res) => void controller.createMedicalHistory(req, res));
 router.get('/', (req, res) => void controller.getMedicalHistorys(req, res));
 router.get('/:id', (req, res) => void controller.getMedicalHistoryById(req, res));
-router.put('/:id', validateRequest(MedicalHistorySchema), (req, res) => void controller.updateMedicalHistory(req, res));
+router.put('/:id', validateRequest(medicalHistorySchema), (req, res) => void controller.updateMedicalHistory(req, res));
 router.delete('/:id', (req, res) => void controller.deleteMedicalHistory(req, res));
 
 export default router;
