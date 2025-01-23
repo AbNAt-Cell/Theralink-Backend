@@ -177,7 +177,6 @@ model Document {
   filePath    String
   fileType    String
   description String?
-  uploadedBy  String
 
   patient     Patient   @relation(fields: [patientId], references: [id])
 
