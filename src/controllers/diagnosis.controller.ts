@@ -37,7 +37,7 @@ export class DiagnosisController {
       const parsedPage = Math.max(1, parseInt(page as string, 10));
       const parsedLimit = Math.max(1, parseInt(limit as string, 10));
 
-      const Diagnosiss = await prisma.diagnosis.findMany({
+      const diagnosis = await prisma.diagnosis.findMany({
         orderBy: { createdAt: "desc" },
         where: { patientId: patientid },
         skip: (parsedPage - 1) * parsedLimit,
@@ -52,7 +52,7 @@ export class DiagnosisController {
         totalCount,
         totalPages: Math.ceil(totalCount / parsedLimit),
         currentPage: parsedPage,
-        Diagnosiss,
+        diagnosis,
       });
     } catch (error) {
       console.error("Get Diagnosiss error:", error);
