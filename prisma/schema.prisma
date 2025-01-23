@@ -6,24 +6,6 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  username      String    @unique
-  password      String
-  role          Role      @default(CLIENT)
-  resetToken    String?
-  resetTokenExpiry DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relations
-  appointments  Appointment[]  // A user (healthcare provider) can have many appointments
-  diagnosis   Diagnosis[]
-  // Other fields based on your admin data management requirements
-}
-
 enum Role {
   ADMIN
   CLIENT // A healthcare provider or patient role
@@ -63,6 +45,23 @@ enum eligibilityStatus {
 }
 
 
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  username      String    @unique
+  password      String
+  role          Role      @default(CLIENT)
+  resetToken    String?
+  resetTokenExpiry DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  appointments  Appointment[]  // A user (healthcare provider) can have many appointments
+  diagnosis   Diagnosis[]
+  // Other fields based on your admin data management requirements
+}
 model Patient {
   id            String    @id @default(uuid())
   firstName     String
@@ -115,6 +114,7 @@ model Appointment {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
+
 model MedicalHistory {
   id            String     @id @default(uuid())
   provider      String   
@@ -129,6 +129,7 @@ model MedicalHistory {
   patientId     String
   patient       Patient    @relation(fields: [patientId], references: [id])
 }
+
 model Insurance {
   id            String     @id @default(uuid())
   provider      String   
@@ -277,6 +278,7 @@ model Physician {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
+
 model Background {
   id                 String       @id @default(uuid())
   patientId          String
@@ -289,6 +291,7 @@ model Background {
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
 }
+
 model Immunization {
   id           String   @id @default(uuid())
   patientId    String
@@ -335,7 +338,6 @@ model Contact {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
-
 
 model ParentContact {
   id           String    @id @default(uuid())
