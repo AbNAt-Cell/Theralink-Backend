@@ -22,7 +22,7 @@ router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getInsuranceById(req, res)
 );
 
-// Route to update a specific insurance
+// Route to Update specific insurance
 router.put(
   "/:id/:patientid",
   authenticate,
@@ -112,7 +112,7 @@ export default router;
  *
  *   put:
  *     tags: [Insurance]
- *     summary: Update an insurance record for a patient
+ *     summary: Update insurance record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId

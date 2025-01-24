@@ -20,7 +20,7 @@ router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getParentContactById(req, res)
 );
 
-// Route to update a specific parentContact
+// Route to Update specific parentContact
 router.put(
   "/:id/:patientid",
   authenticate,
@@ -111,7 +111,7 @@ export default router;
  *
  *   put:
  *     tags: [ParentContact]
- *     summary: Update an parentContacts record for a patient
+ *     summary: Update parentContacts record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId

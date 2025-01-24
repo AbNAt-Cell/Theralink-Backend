@@ -89,7 +89,7 @@ export default router;
  * 
  *   put:
  *     tags: [MedicalHistory]
- *     summary: Update an medicalHistory record for a patient
+ *     summary: Update medicalHistory record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId

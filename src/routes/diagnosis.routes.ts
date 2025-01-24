@@ -20,7 +20,7 @@ router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getDiagnosisById(req, res)
 );
 
-// Route to update a specific Diagnosis
+// Route to Update specific Diagnosis
 router.put(
   "/:id/:patientid",
   authenticate,
@@ -102,7 +102,7 @@ export default router;
  *
  *   put:
  *     tags: [Diagnosis]
- *     summary: Update an Diagnosis record for a patient
+ *     summary: Update Diagnosis record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId

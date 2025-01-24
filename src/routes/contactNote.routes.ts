@@ -20,7 +20,7 @@ router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getContactNoteById(req, res)
 );
 
-// Route to update a specific contactNote
+// Route to Update specific contactNote
 router.put(
   "/:id/:patientid",
   authenticate,
@@ -105,7 +105,7 @@ export default router;
  *
  *   put:
  *     tags: [ContactNote]
- *     summary: Update an ContactNotes record for a patient
+ *     summary: Update ContactNotes record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId

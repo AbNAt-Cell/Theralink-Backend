@@ -20,7 +20,7 @@ router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getLedgerById(req, res)
 );
 
-// Route to update a specific ledger
+// Route to Update specific ledger
 router.put(
   "/:id/:patientid",
   authenticate,
@@ -109,7 +109,7 @@ export default router;
  *
  *   put:
  *     tags: [Ledger]
- *     summary: Update a ledger record for a patient
+ *     summary: Update ledger record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId

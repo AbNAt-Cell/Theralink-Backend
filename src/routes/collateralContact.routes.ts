@@ -20,7 +20,7 @@ router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getCollateralContactById(req, res)
 );
 
-// Route to update a specific collateralContact
+// Route to Update specific collateralContact
 router.put(
   "/:id/:patientid",
   authenticate,
@@ -105,7 +105,7 @@ export default router;
  *
  *   put:
  *     tags: [CollateralContact]
- *     summary: Update an CollateralContacts record for a patient
+ *     summary: Update CollateralContacts record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId

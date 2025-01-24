@@ -119,8 +119,8 @@ export class AppointmentController {
         Appointment,
       });
     } catch (error) {
-      console.error("Update Appointment error:", error);
-      return res.status(500).json({ error: "Failed to update Appointment" });
+      console.error("Updateppointment error:", error);
+      return res.status(500).json({ error: "Failed to Updateppointment" });
     }
   }
 

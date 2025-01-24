@@ -22,7 +22,7 @@ router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getPhysicianById(req, res)
 );
 
-// Route to update a specific Physicians
+// Route to Update specific Physicians
 router.put(
   "/:id/:patientid",
   authenticate,
@@ -111,7 +111,7 @@ export default router;
  *
  *   put:
  *     tags: [Physician]
- *     summary: Update an Physicians record for a patient
+ *     summary: Update Physicians record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId

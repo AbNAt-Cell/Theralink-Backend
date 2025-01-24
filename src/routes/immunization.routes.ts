@@ -20,7 +20,7 @@ router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getImmunizationById(req, res)
 );
 
-// Route to update a specific immunization
+// Route to Update specific immunization
 router.put(
   "/:id/:patientid",
   authenticate,
@@ -124,7 +124,7 @@ export default router;
  *
  *   put:
  *     tags: [Immunization]
- *     summary: Update an immunization record for a patient
+ *     summary: Update immunization record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId

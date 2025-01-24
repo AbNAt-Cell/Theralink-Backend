@@ -22,7 +22,7 @@ router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getVitalById(req, res)
 );
 
-// Route to update a specific vitals
+// Route to Update specific vitals
 router.put(
   "/:id/:patientid",
   authenticate,
@@ -116,7 +116,7 @@ export default router;
  *
  *   put:
  *     tags: [Vital]
- *     summary: Update an vitals record for a patient
+ *     summary: Update vitals record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
