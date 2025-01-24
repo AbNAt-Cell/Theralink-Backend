@@ -15,7 +15,7 @@ export class AppointmentController {
       const conflictingAppointment = await prisma.appointment.findFirst({
         where: {
           healthcareProviderId: user?.id,
-          date: date,
+          date: new Date(date),
         },
       });
 
@@ -29,7 +29,8 @@ export class AppointmentController {
       const newAppointment = await prisma.appointment.create({
         data: {
           ...rest,
-          date,
+          date: new Date(date),
+
           status,
           patient: {
             connect: { id: patientid },

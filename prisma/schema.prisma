@@ -99,9 +99,11 @@ model Patient {
   service Service[]
   physician Physician[]
   background Background[]
-  contact Contact[]
   immunization Immunization[]
   patientFile PatientFile[]
+  parentContact ParentContact[]
+  collateralContact CollateralContact[]
+  contactNote ContactNote[]
 }
 
 model Appointment {
@@ -326,21 +328,9 @@ model PatientFile {
   updatedAt    DateTime @updatedAt
 }
 
-model Contact {
-  id           String    @id @default(uuid())
-  patientId    String
-  parentContact ParentContact[]
-  collateralContact CollateralContact[]
-  contactNote ContactNote[]
-  patient      Patient   @relation(fields: [patientId], references: [id])
-  
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-}
 
 model ParentContact {
   id           String    @id @default(uuid())
-  contactId    String
   firstName     String
   lastName      String
   relationship String   
@@ -348,33 +338,33 @@ model ParentContact {
   email        String?
   city      String?   
   state      String?   
-
-  contact      Contact   @relation(fields: [contactId], references: [id])
-
+  patientId    String
+  patient      Patient   @relation(fields: [patientId], references: [id])
+  
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
 
 model CollateralContact {
   id           String    @id @default(uuid())
-  contactId    String
   firstName     String
   lastName      String
   phone        String
   email        String?
-  contact      Contact   @relation(fields: [contactId], references: [id])
+  patientId    String
+  patient      Patient   @relation(fields: [patientId], references: [id])
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
 
 model ContactNote {
   id           String    @id @default(uuid())
-  contactId    String
   firstName     String
   lastName      String
   phone        String
   email        String?
-  contact      Contact   @relation(fields: [contactId], references: [id])
+  patientId    String
+  patient      Patient   @relation(fields: [patientId], references: [id])
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }

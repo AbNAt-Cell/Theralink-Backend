@@ -16,6 +16,9 @@ import vitalRoutes from "./routes/vital.routes";
 import serviceRoutes from "./routes/service.routes";
 import physicianRoutes from "./routes/physician.routes";
 import immunizationRoutes from "./routes/immunization.routes";
+import parentContactRoutes from "./routes/parentContact.routes";
+import collateralContactRoutes from "./routes/collateralContact.routes";
+import contactNoteRoutes from "./routes/contactNote.routes";
 
 const app = express();
 
@@ -46,6 +49,10 @@ app.use("/api/vitals", vitalRoutes);
 app.use("/api/service", serviceRoutes);
 app.use("/api/physician", physicianRoutes);
 app.use("/api/immunization", immunizationRoutes);
+app.use("/api/parentContacts", parentContactRoutes);
+app.use("/api/collateralContacts", collateralContactRoutes);
+app.use("/api/contactNotes", contactNoteRoutes);
+// contactNotes
 // Health check route
 app.get("/", (_req, res) => {
   res.json({ status: "API is running" });
