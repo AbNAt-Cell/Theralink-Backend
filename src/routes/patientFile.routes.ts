@@ -1,68 +1,68 @@
 import { Router } from "express";
-import { DocumentController } from "../controllers/document.controller";
+import { PatientFileController } from "../controllers/patientFile.controller";
 import { validateRequest } from "../middleware/validate.middleware";
-import { documentSchema } from "../validators/document.validator";
+import { patientFileSchema } from "../validators/patientFile.validator";
 import { authenticate, authorize } from "../middleware/auth.middleware";
 
 const router = Router();
-const controller = new DocumentController();
+const controller = new PatientFileController();
 router.post("/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.createDocument(req, res)
+  controller.createPatientFile(req, res)
 );
 
-// Route to get all Documents for a patient
+// Route to get all PatientFiles for a patient
 router.get("/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.getDocuments(req, res)
+  controller.getPatientFiles(req, res)
 );
 
-// Route to get a specific document by ID
+// Route to get a specific patientFile by ID
 router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.getDocumentById(req, res)
+  controller.getPatientFileById(req, res)
 );
 
-// Route to update a specific document
+// Route to update a specific patientFile
 router.put(
   "/:id/:patientid",
   authenticate,
   authorize("ADMIN"),
-  validateRequest(documentSchema),
-  (req, res) => controller.updateDocument(req, res)
+  validateRequest(patientFileSchema),
+  (req, res) => controller.updatePatientFile(req, res)
 );
 
-// Route to delete a specific document
+// Route to delete a specific patientFile
 router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.deleteDocument(req, res)
+  controller.deletePatientFile(req, res)
 );
 
 export default router;
 
 /**
  * @swagger
- * /api/document/{patientId}:
+ * /api/patientFile/{patientId}:
  *   get:
- *     tags: [Document]
- *     summary: Get all document records for a patient
+ *     tags: [PatientFile]
+ *     summary: Get all patientFile records for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the patient whose document records are being retrieved
+ *         description: ID of the patient whose patientFile records are being retrieved
  *     responses:
  *       200:
- *         description: List of patient document records retrieved successfully
+ *         description: List of patient patientFile records retrieved successfully
  *
  *   post:
- *     tags: [Document]
- *     summary: Create new document for a patient
+ *     tags: [PatientFile]
+ *     summary: Create new patientFile for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the patient for whom document is being created
+ *         description: ID of the patient for whom patientFile is being created
  *     requestBody:
  *       required: true
  *       content:
@@ -80,12 +80,12 @@ export default router;
  *                 type: string
  *     responses:
  *       201:
- *         description: Document record created successfully
+ *         description: PatientFile record created successfully
  *
- * /api/document/{patientId}/{id}:
+ * /api/patientFile/{patientId}/{id}:
  *   get:
- *     tags: [Document]
- *     summary: Get a specific document record by patient ID and document ID
+ *     tags: [PatientFile]
+ *     summary: Get a specific patientFile record by patient ID and patientFile ID
  *     parameters:
  *       - in: path
  *         name: patientId
@@ -98,14 +98,14 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the document record
+ *         description: ID of the patientFile record
  *     responses:
  *       200:
- *         description: Document record retrieved successfully
+ *         description: PatientFile record retrieved successfully
  *
  *   put:
- *     tags: [Document]
- *     summary: Update an document record for a patient
+ *     tags: [PatientFile]
+ *     summary: Update an patientFile record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
@@ -118,7 +118,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the document record to be updated
+ *         description: ID of the patientFile record to be updated
  *     requestBody:
  *       required: true
  *       content:
@@ -136,11 +136,11 @@ export default router;
  *                 type: string
  *     responses:
  *       200:
- *         description: Document record updated successfully
+ *         description: PatientFile record updated successfully
  *
  *   delete:
- *     tags: [Document]
- *     summary: Delete a specific document record
+ *     tags: [PatientFile]
+ *     summary: Delete a specific patientFile record
  *     parameters:
  *       - in: path
  *         name: patientId
@@ -153,8 +153,8 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the document record to be deleted
+ *         description: ID of the patientFile record to be deleted
  *     responses:
  *       204:
- *         description: Document record deleted successfully
+ *         description: PatientFile record deleted successfully
  */

@@ -271,7 +271,6 @@ model Physician {
   firstName     String
   lastName      String
   phone         String
-  
   address       String
   comment       String
   patientId   String
@@ -298,7 +297,7 @@ model Immunization {
   patientId    String
   vaccineName  String   
   manufacturer  String   
-  lotNumber  String   
+  lotNumber  float   
   adminstrationSite  String   
   rejectedReason  String? 
   isRejected  Boolean?   
@@ -317,11 +316,10 @@ model Immunization {
 model PatientFile {
   id           String   @id @default(uuid())
   patientId    String
-  fileName     String   // Name of the file
-  fileType     String   // Type of file (e.g., "pdf", "jpeg")
-  fileUrl      String   // URL or path where the file is stored
-  description  String?  // Optional description of the file content
-  uploadedBy   String   // Who uploaded the file (e.g., admin, doctor)
+  fileName     String  
+  fileType     String  
+  fileUrl      String   
+  description  String?  
   patient      Patient  @relation(fields: [patientId], references: [id])
 
   createdAt    DateTime @default(now())
