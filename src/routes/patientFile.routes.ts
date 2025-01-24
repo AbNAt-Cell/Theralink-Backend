@@ -81,7 +81,7 @@ export default router;
  *       201:
  *         description: PatientFile record created successfully
  *
- * /api/patientFile/{patientId}/{id}:
+ * /api/patientFile/{id}/{patientId}:
  *   get:
  *     tags: [PatientFile]
  *     summary: Get a specific patientFile record by patient ID and patientFile ID

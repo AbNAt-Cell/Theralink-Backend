@@ -93,7 +93,7 @@ export default router;
  *       201:
  *         description: Vital record created successfully
  *
- * /api/vitals/{patientId}/{id}:
+ * /api/vitals/{id}/{patientId}:
  *   get:
  *     tags: [Vital]
  *     summary: Get a specific vitals record by patient ID and vitals ID

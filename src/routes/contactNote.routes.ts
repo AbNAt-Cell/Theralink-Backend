@@ -40,7 +40,7 @@ export default router;
  * @swagger
  * /api/contactNotes/{patientId}:
  *   get:
- *     tags: [Medication]
+ *     tags: [ContactNote]
  *     summary: Get all ContactNotes records for a patient
  *     parameters:
  *       - in: path
@@ -54,7 +54,7 @@ export default router;
  *         description: List of patient ContactNotes records retrieved successfully
  *
  *   post:
- *     tags: [Medication]
+ *     tags: [ContactNote]
  *     summary: Create new ContactNotes for a patient
  *     parameters:
  *       - in: path
@@ -80,11 +80,11 @@ export default router;
  *                 type: string
  *     responses:
  *       201:
- *         description: Medication record created successfully
+ *         description: ContactNote record created successfully
  *
- * /api/contactNotes/{patientId}/{id}:
+ * /api/contactNotes/{id}/{patientId}:
  *   get:
- *     tags: [Medication]
+ *     tags: [ContactNote]
  *     summary: Get a specific ContactNotes record by patient ID and ContactNotes ID
  *     parameters:
  *       - in: path
@@ -101,10 +101,10 @@ export default router;
  *         description: ID of the ContactNotes record
  *     responses:
  *       200:
- *         description: Medication record retrieved successfully
+ *         description: ContactNote record retrieved successfully
  *
  *   put:
- *     tags: [Medication]
+ *     tags: [ContactNote]
  *     summary: Update an ContactNotes record for a patient
  *     parameters:
  *       - in: path
@@ -136,10 +136,10 @@ export default router;
  *                 type: string
  *     responses:
  *       200:
- *         description: Medication record updated successfully
+ *         description: ContactNote record updated successfully
  *
  *   delete:
- *     tags: [Medication]
+ *     tags: [ContactNote]
  *     summary: Delete a specific ContactNotes record
  *     parameters:
  *       - in: path
@@ -156,5 +156,5 @@ export default router;
  *         description: ID of the ContactNotes record to be deleted
  *     responses:
  *       204:
- *         description: Medication record deleted successfully
+ *         description: ContactNote record deleted successfully
  */

@@ -92,7 +92,7 @@ export default router;
  *       201:
  *         description: Medication record created successfully
  *
- * /api/medication/{patientId}/{id}:
+ * /api/medication/{id}/{patientId}:
  *   get:
  *     tags: [Medication]
  *     summary: Get a specific medication record by patient ID and medication ID

@@ -40,7 +40,7 @@ export default router;
  * @swagger
  * /api/medicationAdminstration/{patientId}:
  *   get:
- *     tags: [Medication]
+ *     tags: [MedicationAdminstration]
  *     summary: Get all medicationAdminstration records for a patient
  *     parameters:
  *       - in: path
@@ -54,7 +54,7 @@ export default router;
  *         description: List of patient medicationAdminstration records retrieved successfully
  *
  *   post:
- *     tags: [Medication]
+ *     tags: [MedicationAdminstration]
  *     summary: Create new medicationAdminstration for a patient
  *     parameters:
  *       - in: path
@@ -85,11 +85,11 @@ export default router;
  *                 type: number
  *     responses:
  *       201:
- *         description: Medication record created successfully
+ *         description: MedicationAdminstration record created successfully
  *
- * /api/medicationAdminstration/{patientId}/{id}:
+ * /api/medicationAdminstration/{id}/{patientId}:
  *   get:
- *     tags: [Medication]
+ *     tags: [MedicationAdminstration]
  *     summary: Get a specific medicationAdminstration record by patient ID and medicationAdminstration ID
  *     parameters:
  *       - in: path
@@ -106,10 +106,10 @@ export default router;
  *         description: ID of the medicationAdminstration record
  *     responses:
  *       200:
- *         description: Medication record retrieved successfully
+ *         description: MedicationAdminstration record retrieved successfully
  *
  *   put:
- *     tags: [Medication]
+ *     tags: [MedicationAdminstration]
  *     summary: Update an medicationAdminstration record for a patient
  *     parameters:
  *       - in: path
@@ -146,10 +146,10 @@ export default router;
  *                 type: number
  *     responses:
  *       200:
- *         description: Medication record updated successfully
+ *         description: MedicationAdminstration record updated successfully
  *
  *   delete:
- *     tags: [Medication]
+ *     tags: [MedicationAdminstration]
  *     summary: Delete a specific medicationAdminstration record
  *     parameters:
  *       - in: path
@@ -166,5 +166,5 @@ export default router;
  *         description: ID of the medicationAdminstration record to be deleted
  *     responses:
  *       204:
- *         description: Medication record deleted successfully
+ *         description: MedicationAdminstration record deleted successfully
  */

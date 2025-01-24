@@ -79,7 +79,7 @@ export default router;
  *       201:
  *         description: Diagnosis record created successfully
  *
- * /api/Diagnosis/{patientId}/{id}:
+ * /api/Diagnosis/{id}/{patientId}:
  *   get:
  *     tags: [Diagnosis]
  *     summary: Get a specific Diagnosis record by patient ID and Diagnosis ID

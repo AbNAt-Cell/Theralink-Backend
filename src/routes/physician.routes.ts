@@ -88,7 +88,7 @@ export default router;
  *       201:
  *         description: Physician record created successfully
  *
- * /api/physician/{patientId}/{id}:
+ * /api/physician/{id}/{patientId}:
  *   get:
  *     tags: [Physician]
  *     summary: Get a specific Physicians record by patient ID and Physicians ID

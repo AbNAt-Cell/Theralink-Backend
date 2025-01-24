@@ -81,7 +81,7 @@ export default router;
  *       201:
  *         description: Document record created successfully
  *
- * /api/document/{patientId}/{id}:
+ * /api/document/{id}/{patientId}:
  *   get:
  *     tags: [Document]
  *     summary: Get a specific document record by patient ID and document ID

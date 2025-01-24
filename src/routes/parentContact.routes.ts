@@ -40,7 +40,7 @@ export default router;
  * @swagger
  * /api/parentContacts/{patientId}:
  *   get:
- *     tags: [Medication]
+ *     tags: [ParentContact]
  *     summary: Get all parentContacts records for a patient
  *     parameters:
  *       - in: path
@@ -54,7 +54,7 @@ export default router;
  *         description: List of patient parentContacts records retrieved successfully
  *
  *   post:
- *     tags: [Medication]
+ *     tags: [ParentContact]
  *     summary: Create new parentContacts for a patient
  *     parameters:
  *       - in: path
@@ -86,11 +86,11 @@ export default router;
  *                 type: string
  *     responses:
  *       201:
- *         description: Medication record created successfully
+ *         description: ParentContact record created successfully
  *
- * /api/parentContacts/{patientId}/{id}:
+ * /api/parentContacts/{id}/{patientId}:
  *   get:
- *     tags: [Medication]
+ *     tags: [ParentContact]
  *     summary: Get a specific parentContacts record by patient ID and parentContacts ID
  *     parameters:
  *       - in: path
@@ -107,10 +107,10 @@ export default router;
  *         description: ID of the parentContacts record
  *     responses:
  *       200:
- *         description: Medication record retrieved successfully
+ *         description: ParentContact record retrieved successfully
  *
  *   put:
- *     tags: [Medication]
+ *     tags: [ParentContact]
  *     summary: Update an parentContacts record for a patient
  *     parameters:
  *       - in: path
@@ -148,10 +148,10 @@ export default router;
  *                 type: string
  *     responses:
  *       200:
- *         description: Medication record updated successfully
+ *         description: ParentContact record updated successfully
  *
  *   delete:
- *     tags: [Medication]
+ *     tags: [ParentContact]
  *     summary: Delete a specific parentContacts record
  *     parameters:
  *       - in: path
@@ -168,5 +168,5 @@ export default router;
  *         description: ID of the parentContacts record to be deleted
  *     responses:
  *       204:
- *         description: Medication record deleted successfully
+ *         description: ParentContact record deleted successfully
  */

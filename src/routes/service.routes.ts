@@ -82,7 +82,7 @@ export default router;
  *       201:
  *         description: Service record created successfully
  *
- * /api/service/{patientId}/{id}:
+ * /api/service/{id}/{patientId}:
  *   get:
  *     tags: [Service]
  *     summary: Get a specific Services record by patient ID and Services ID

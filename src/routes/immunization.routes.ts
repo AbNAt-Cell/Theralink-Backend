@@ -101,7 +101,7 @@ export default router;
  *       201:
  *         description: Immunization record created successfully
  *
- * /api/immunization/{patientId}/{id}:
+ * /api/immunization/{id}/{patientId}:
  *   get:
  *     tags: [Immunization]
  *     summary: Get a specific immunization record by patient ID and immunization ID

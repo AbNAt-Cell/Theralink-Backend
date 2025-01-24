@@ -86,7 +86,7 @@ export default router;
  *       201:
  *         description: Ledger record created successfully
  *
- * /api/ledger/{patientId}/{id}:
+ * /api/ledger/{id}/{patientId}:
  *   get:
  *     tags: [Ledger]
  *     summary: Get a specific ledger record by patient ID and ledger ID

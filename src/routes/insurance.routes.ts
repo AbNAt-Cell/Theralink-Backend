@@ -89,7 +89,7 @@ export default router;
  *       201:
  *         description: Insurance record created successfully
  *
- * /api/insurance/{patientId}/{id}:
+ * /api/insurance/{id}/{patientId}:
  *   get:
  *     tags: [Insurance]
  *     summary: Get a specific insurance record by patient ID and insurance ID

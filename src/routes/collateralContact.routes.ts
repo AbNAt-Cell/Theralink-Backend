@@ -40,7 +40,7 @@ export default router;
  * @swagger
  * /api/collateralContacts/{patientId}:
  *   get:
- *     tags: [Medication]
+ *     tags: [CollateralContact]
  *     summary: Get all CollateralContacts records for a patient
  *     parameters:
  *       - in: path
@@ -54,7 +54,7 @@ export default router;
  *         description: List of patient CollateralContacts records retrieved successfully
  *
  *   post:
- *     tags: [Medication]
+ *     tags: [CollateralContact]
  *     summary: Create new CollateralContacts for a patient
  *     parameters:
  *       - in: path
@@ -80,11 +80,11 @@ export default router;
  *                 type: string
  *     responses:
  *       201:
- *         description: Medication record created successfully
+ *         description: CollateralContact record created successfully
  *
- * /api/collateralContacts/{patientId}/{id}:
+ * /api/collateralContacts/{id}/{patientId}:
  *   get:
- *     tags: [Medication]
+ *     tags: [CollateralContact]
  *     summary: Get a specific CollateralContacts record by patient ID and CollateralContacts ID
  *     parameters:
  *       - in: path
@@ -101,10 +101,10 @@ export default router;
  *         description: ID of the CollateralContacts record
  *     responses:
  *       200:
- *         description: Medication record retrieved successfully
+ *         description: CollateralContact record retrieved successfully
  *
  *   put:
- *     tags: [Medication]
+ *     tags: [CollateralContact]
  *     summary: Update an CollateralContacts record for a patient
  *     parameters:
  *       - in: path
@@ -136,10 +136,10 @@ export default router;
  *                 type: string
  *     responses:
  *       200:
- *         description: Medication record updated successfully
+ *         description: CollateralContact record updated successfully
  *
  *   delete:
- *     tags: [Medication]
+ *     tags: [CollateralContact]
  *     summary: Delete a specific CollateralContacts record
  *     parameters:
  *       - in: path
@@ -156,5 +156,5 @@ export default router;
  *         description: ID of the CollateralContacts record to be deleted
  *     responses:
  *       204:
- *         description: Medication record deleted successfully
+ *         description: CollateralContact record deleted successfully
  */

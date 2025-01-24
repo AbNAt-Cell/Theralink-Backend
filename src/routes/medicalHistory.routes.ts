@@ -66,7 +66,7 @@ export default router;
  *       201:
  *         description: MedicalHistory record created successfully
  * 
- * /api/medicalHistory/{patientId}/{id}:
+ * /api/medicalHistory/{id}/{patientId}:
  *   get:
  *     tags: [MedicalHistory]
  *     summary: Get a specific medicalHistory record by patient ID and medicalHistory ID
