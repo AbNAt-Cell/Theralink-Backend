@@ -59,7 +59,6 @@ app.use("/api/contactNotes", contactNoteRoutes);
 app.use("/api/educationBackground", educationBackgroundRoutes);
 app.use("/api/employment", employmentRoutes);
 app.use("/api/socialDeterminants", socialDeterminantsRoutes);
-// contactNotes
 // Health check route
 app.get("/", (_req, res) => {
   res.json({ status: "API is running" });
