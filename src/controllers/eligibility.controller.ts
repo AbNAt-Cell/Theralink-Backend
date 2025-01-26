@@ -9,7 +9,7 @@ export class EligibilityController {
     try {
       const { patientid } = req.params;
       const { startDate, endDate, ...rest } = req.body;
-      const newEligibility = await prisma.eligibility.create({
+      const newEligibility = await prisma.insurance.create({
         data: {
           ...rest,
           startDate: new Date(startDate),
@@ -22,7 +22,7 @@ export class EligibilityController {
 
       res.status(201).json({
         message: "Eligibility created successfully",
-        eligibility: newEligibility,
+        insurance: newEligibility,
       });
     } catch (error) {
       console.error("Create Eligibility error:", error);
@@ -38,14 +38,14 @@ export class EligibilityController {
       const parsedPage = Math.max(1, parseInt(page as string, 10));
       const parsedLimit = Math.max(1, parseInt(limit as string, 10));
 
-      const eligibility = await prisma.eligibility.findMany({
+      const insurance = await prisma.insurance.findMany({
         orderBy: { createdAt: "desc" },
         where: { patientId: patientid },
         skip: (parsedPage - 1) * parsedLimit,
         take: parsedLimit,
       });
 
-      const totalCount = await prisma.eligibility.count({
+      const totalCount = await prisma.insurance.count({
         where: { patientId: patientid },
       });
 
@@ -53,10 +53,10 @@ export class EligibilityController {
         totalCount,
         totalPages: Math.ceil(totalCount / parsedLimit),
         currentPage: parsedPage,
-        eligibility,
+        insurance,
       });
     } catch (error) {
-      console.error("Get eligibility error:", error);
+      console.error("Get insurance error:", error);
       res.status(500).json({ error: "Failed to fetch Eligibilitys" });
     }
   }
@@ -65,16 +65,16 @@ export class EligibilityController {
     try {
       const { id, patientid } = req.params;
 
-      const eligibility = await prisma.eligibility.findFirst({
+      const insurance = await prisma.insurance.findFirst({
         where: { id, patientId: patientid },
       });
 
-      if (!eligibility) {
+      if (!insurance) {
         res.status(404).json({ error: "Eligibility not found" });
         return;
       }
 
-      res.status(200).json({ eligibility });
+      res.status(200).json({ insurance });
     } catch (error) {
       console.error("Get Eligibility error:", error);
       res.status(500).json({ error: "Failed to fetch Eligibility" });
@@ -85,7 +85,7 @@ export class EligibilityController {
     try {
       const { id } = req.params;
       const { startDate, endDate, ...rest } = req.body;
-      const eligibility = await prisma.eligibility.update({
+      const insurance = await prisma.insurance.update({
         where: { id },
         data: {
           ...rest,
@@ -96,7 +96,7 @@ export class EligibilityController {
 
       res.status(200).json({
         message: "Eligibility updated successfully",
-        eligibility,
+        insurance,
       });
     } catch (error) {
       console.error("Update Eligibility error:", error);
@@ -108,16 +108,16 @@ export class EligibilityController {
     try {
       const { id, patientid } = req.params;
 
-      const eligibility = await prisma.eligibility.findFirst({
+      const insurance = await prisma.insurance.findFirst({
         where: { id, patientId: patientid },
       });
 
-      if (!eligibility) {
-        res.status(404).json({ error: "eligibility not found" });
+      if (!insurance) {
+        res.status(404).json({ error: "insurance not found" });
         return;
       }
 
-      await prisma.eligibility.delete({
+      await prisma.insurance.delete({
         where: { id },
       });
 
