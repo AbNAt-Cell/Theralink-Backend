@@ -8,3 +8,4 @@ export const insuranceSchema = Joi.object({
     status: Joi.string().valid(...Object.values(insuranceStatus)).required(),
     eligibilityStatus: Joi.string().valid(...Object.values(eligibilityStatus)).required(),
 });
+// treatmentPlan

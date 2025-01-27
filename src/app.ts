@@ -24,6 +24,9 @@ import employmentRoutes from "./routes/employment.routes";
 import socialDeterminantsRoutes from "./routes/socialDeterminants.routes";
 import clientSignatureRoutes from "./routes/clientSignature.routes";
 import parentSignatureRoutes from "./routes/parentSignature.routes";
+import treatmentPlanRoutes from "./routes/treatmentPlan.routes";
+import treatmentGoalsRoutes from "./routes/treatmentGoals.routes";
+import treatmentObjectiveRoutes from "./routes/treatmentObjective.routes";
 // socialDeterminants
 
 const app = express();
@@ -63,6 +66,10 @@ app.use("/api/employment", employmentRoutes);
 app.use("/api/socialDeterminants", socialDeterminantsRoutes);
 app.use("/api/clientSignature", clientSignatureRoutes);
 app.use("/api/parentSignature", parentSignatureRoutes);
+app.use("/api/treatmentPlan", treatmentPlanRoutes);
+app.use("/api/treatmentGoals", treatmentGoalsRoutes);
+app.use("/api/treatmentObjective", treatmentObjectiveRoutes);
+// treatmentGoalsRoutes
 // Health check route
 app.get("/", (_req, res) => {
   res.json({ status: "API is running" });
