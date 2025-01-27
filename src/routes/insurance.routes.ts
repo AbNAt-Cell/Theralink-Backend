@@ -37,7 +37,6 @@ router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
 );
 
 export default router;
-
 /**
  * @swagger
  * /api/insurance/{patientId}:
@@ -54,7 +53,6 @@ export default router;
  *     responses:
  *       200:
  *         description: List of patient insurance records retrieved successfully
- *
  *   post:
  *     tags: [Insurance]
  *     summary: Create new insurance for a patient
@@ -85,94 +83,10 @@ export default router;
  *               status:
  *                 type: string
  *                 enum: [PRIMARY, COPAY]
- *              eligibilityStatus:
+ *               eligibilityStatus:
  *                 type: string
- *                 enum: [PENDING, ELIGIBLE,INELIGIBLE,UNDER_REVIEW, EXPIRED, REVOKED]
+ *                 enum: [PENDING, ELIGIBLE, INELIGIBLE, UNDER_REVIEW, EXPIRED, REVOKED]
  *     responses:
  *       201:
  *         description: Insurance record created successfully
- *
- * /api/insurance/{id}/{patientId}:
- *   get:
- *     tags: [Insurance]
- *     summary: Get a specific insurance record by patient ID and insurance ID
- *     parameters:
- *       - in: path
- *         name: patientId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the patient
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the insurance record
- *     responses:
- *       200:
- *         description: Insurance record retrieved successfully
- *
- *   put:
- *     tags: [Insurance]
- *     summary: Update insurance record for a patient
- *     parameters:
- *       - in: path
- *         name: patientId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the patient
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the insurance record to be updated
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               insuranceType:
- *                 type: string
- *               policyNumber:
- *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date
- *               endDate:
- *                 type: string
- *                 format: date
- *               status:
- *                 type: string
- *                 enum: [PRIMARY, COPAY]
- *               eligibilityStatus:
- *                 type: string
- *                 enum: [PENDING, ELIGIBLE,INELIGIBLE,UNDER_REVIEW, EXPIRED, REVOKED]
- *     responses:
- *       200:
- *         description: Insurance record updated successfully
- *
- *   delete:
- *     tags: [Insurance]
- *     summary: Delete a specific insurance record
- *     parameters:
- *       - in: path
- *         name: patientId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the patient
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the insurance record to be deleted
- *     responses:
- *       204:
- *         description: Insurance record deleted successfully
  */

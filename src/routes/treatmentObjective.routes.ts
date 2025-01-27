@@ -37,7 +37,6 @@ router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
 );
 
 export default router;
-
 /**
  * @swagger
  * /api/treatmentObjective/{treatmentgoalsId}:
@@ -50,7 +49,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description:treatment goal ID of the patient whose treatmentObjective records are being retrieved
+ *         description: Treatment goal ID of the patient whose treatmentObjective records are being retrieved
  *     responses:
  *       200:
  *         description: List of patient treatmentObjective records retrieved successfully
@@ -64,7 +63,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description:treatment goal ID of the patient for whom treatmentObjective is being created
+ *         description: Treatment goal ID of the patient for whom the treatmentObjective is being created
  *     requestBody:
  *       required: true
  *       content:
@@ -76,19 +75,19 @@ export default router;
  *                 type: string
  *               startTime:
  *                 type: string
+ *                 format: date-time
  *               stepdownServices:
  *                 type: string
- *               dischargeObjectivening:
+ *               dischargeObjective:
  *                 type: string
  *               agencies:
  *                 type: string
  *               endTime:
  *                 type: string
- *               abilites:
+ *                 format: date-time
+ *               abilities:
  *                 type: string
  *               preferences:
- *                 type: string
- *               endTime:
  *                 type: string
  *               service:
  *                 type: string
@@ -117,33 +116,33 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description:treatment objective ID of the patient
+ *         description: Treatment goal ID of the patient
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description:treatment goal ID of the treatmentObjective record
+ *         description: Treatment objective ID of the record
  *     responses:
  *       200:
  *         description: TreatmentObjective record retrieved successfully
  *
  *   put:
  *     tags: [TreatmentObjective]
- *     summary: Update treatmentObjective record for a patient
+ *     summary: Update a treatmentObjective record for a patient
  *     parameters:
  *       - in: path
  *         name: treatmentgoalsId
  *         required: true
  *         schema:
  *           type: string
- *         description:treatment goal ID of the patient
+ *         description: Treatment goal ID of the patient
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description:treatment goal ID of the treatmentObjective record to be updated
+ *         description: Treatment objective ID of the record to be updated
  *     requestBody:
  *       required: true
  *       content:
@@ -151,7 +150,7 @@ export default router;
  *           schema:
  *             type: object
  *             properties:
- *               TreatmentObjectiveType:
+ *               treatmentObjectiveType:
  *                 type: string
  *               policyNumber:
  *                 type: string
@@ -166,7 +165,7 @@ export default router;
  *                 enum: [PRIMARY, COPAY]
  *               eligibilityStatus:
  *                 type: string
- *                 enum: [PENDING, ELIGIBLE,INELIGIBLE,UNDER_REVIEW, EXPIRED, REVOKED]
+ *                 enum: [PENDING, ELIGIBLE, INELIGIBLE, UNDER_REVIEW, EXPIRED, REVOKED]
  *     responses:
  *       200:
  *         description: TreatmentObjective record updated successfully
@@ -180,13 +179,13 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description:treatment goal ID of the patient
+ *         description: Treatment goal ID of the patient
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description:treatment goal ID of the treatmentObjective record to be deleted
+ *         description: Treatment objective ID of the record to be deleted
  *     responses:
  *       204:
  *         description: TreatmentObjective record deleted successfully

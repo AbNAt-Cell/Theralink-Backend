@@ -37,7 +37,6 @@ router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
 );
 
 export default router;
-
 /**
  * @swagger
  * /api/treatmentGoals/{treatmentplanId}:
@@ -76,19 +75,19 @@ export default router;
  *                 type: string
  *               startTime:
  *                 type: string
+ *                 format: date-time
  *               stepdownServices:
  *                 type: string
- *               dischargeGoalsning:
+ *               dischargeGoals:
  *                 type: string
  *               agencies:
  *                 type: string
  *               endTime:
  *                 type: string
- *               abilites:
+ *                 format: date-time
+ *               abilities:
  *                 type: string
  *               preferences:
- *                 type: string
- *               endTime:
  *                 type: string
  *               service:
  *                 type: string
@@ -143,7 +142,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: Treatment goal ID  of the treatmentGoals record to be updated
+ *         description: Treatment goal ID of the treatmentGoals record to be updated
  *     requestBody:
  *       required: true
  *       content:
@@ -151,7 +150,7 @@ export default router;
  *           schema:
  *             type: object
  *             properties:
- *               TreatmentGoalsType:
+ *               treatmentGoalsType:
  *                 type: string
  *               policyNumber:
  *                 type: string
@@ -166,7 +165,7 @@ export default router;
  *                 enum: [PRIMARY, COPAY]
  *               eligibilityStatus:
  *                 type: string
- *                 enum: [PENDING, ELIGIBLE,INELIGIBLE,UNDER_REVIEW, EXPIRED, REVOKED]
+ *                 enum: [PENDING, ELIGIBLE, INELIGIBLE, UNDER_REVIEW, EXPIRED, REVOKED]
  *     responses:
  *       200:
  *         description: TreatmentGoals record updated successfully
@@ -186,7 +185,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: Treatment goal ID  of the treatmentGoals record to be deleted
+ *         description: Treatment goal ID of the treatmentGoals record to be deleted
  *     responses:
  *       204:
  *         description: TreatmentGoals record deleted successfully

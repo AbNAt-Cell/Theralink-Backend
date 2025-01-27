@@ -37,7 +37,6 @@ router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
 );
 
 export default router;
-
 /**
  * @swagger
  * /api/treatmentPlan/{patientId}:
@@ -57,14 +56,14 @@ export default router;
  *
  *   post:
  *     tags: [TreatmentPlan]
- *     summary: Create new treatmentPlan for a patient
+ *     summary: Create a new treatmentPlan for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the patient for whom treatmentPlan is being created
+ *         description: ID of the patient for whom the treatmentPlan is being created
  *     requestBody:
  *       required: true
  *       content:
@@ -76,6 +75,7 @@ export default router;
  *                 type: string
  *               startTime:
  *                 type: string
+ *                 format: date-time
  *               stepdownServices:
  *                 type: string
  *               dischargePlanning:
@@ -84,11 +84,10 @@ export default router;
  *                 type: string
  *               endTime:
  *                 type: string
- *               abilites:
+ *                 format: date-time
+ *               abilities:
  *                 type: string
  *               preferences:
- *                 type: string
- *               endTime:
  *                 type: string
  *               service:
  *                 type: string
@@ -130,7 +129,7 @@ export default router;
  *
  *   put:
  *     tags: [TreatmentPlan]
- *     summary: Update treatmentPlan record for a patient
+ *     summary: Update a treatmentPlan record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
@@ -151,7 +150,7 @@ export default router;
  *           schema:
  *             type: object
  *             properties:
- *               TreatmentPlanType:
+ *               treatmentPlanType:
  *                 type: string
  *               policyNumber:
  *                 type: string
@@ -166,7 +165,7 @@ export default router;
  *                 enum: [PRIMARY, COPAY]
  *               eligibilityStatus:
  *                 type: string
- *                 enum: [PENDING, ELIGIBLE,INELIGIBLE,UNDER_REVIEW, EXPIRED, REVOKED]
+ *                 enum: [PENDING, ELIGIBLE, INELIGIBLE, UNDER_REVIEW, EXPIRED, REVOKED]
  *     responses:
  *       200:
  *         description: TreatmentPlan record updated successfully
