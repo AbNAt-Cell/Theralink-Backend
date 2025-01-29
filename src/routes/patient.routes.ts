@@ -135,9 +135,6 @@ export default router;
  *               dateOfBirth:
  *                 type: string
  *                 format: date
- *               medicalHistory:
- *                 type: object
- *                 additionalProperties: true
  *     responses:
  *       200:
  *         description: Patient updated successfully
