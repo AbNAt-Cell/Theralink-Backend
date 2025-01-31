@@ -8,23 +8,23 @@ import { authenticate, authorize } from "../middleware/auth.middleware";
 
 const router = Router();
 const controller = new TreatmentGoalsController();
-router.post("/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.post("/:treatmentplanId", authenticate, authorize("ADMIN"), (req, res) =>
   controller.createTreatmentGoals(req, res)
 );
 
 // Route to get all Treatment Goals for a patient
-router.get("/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.get("/:treatmentplanId", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getTreatmentGoalss(req, res)
 );
 
 // Route to get a specific treatmentGoals by ID
-router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.get("/:id/:treatmentplanId", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getTreatmentGoalsById(req, res)
 );
 
 // Route to Update specific treatmentGoals
 router.put(
-  "/:id/:patientid",
+  "/:id/:treatmentplanId",
   authenticate,
   authorize("ADMIN"),
   validateRequest(treatmentGoalsSchema),
@@ -32,7 +32,7 @@ router.put(
 );
 
 // Route to delete a specific treatmentGoals
-router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.delete("/:id/:treatmentplanId", authenticate, authorize("ADMIN"), (req, res) =>
   controller.deleteTreatmentGoals(req, res)
 );
 

@@ -8,23 +8,23 @@ import { authenticate, authorize } from "../middleware/auth.middleware";
 
 const router = Router();
 const controller = new TreatmentInterventionController();
-router.post("/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.post("/:treatmentobjectiveId", authenticate, authorize("ADMIN"), (req, res) =>
   controller.createTreatmentIntervention(req, res)
 );
 
 // Route to get all Treatment Intervention for a patient
-router.get("/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.get("/:treatmentobjectiveId", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getTreatmentInterventions(req, res)
 );
 
 // Route to get a specific treatmentIntervention by ID
-router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.get("/:id/:treatmentobjectiveId", authenticate, authorize("ADMIN"), (req, res) =>
   controller.getTreatmentInterventionById(req, res)
 );
 
 // Route to Update specific treatmentIntervention
 router.put(
-  "/:id/:patientid",
+  "/:id/:treatmentobjectiveId",
   authenticate,
   authorize("ADMIN"),
   validateRequest(treatmentInterventionSchema),
@@ -32,7 +32,7 @@ router.put(
 );
 
 // Route to delete a specific treatmentIntervention
-router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.delete("/:id/:treatmentobjectiveId", authenticate, authorize("ADMIN"), (req, res) =>
   controller.deleteTreatmentIntervention(req, res)
 );
 
