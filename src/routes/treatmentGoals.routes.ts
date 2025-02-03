@@ -8,8 +8,12 @@ import { authenticate, authorize } from "../middleware/auth.middleware";
 
 const router = Router();
 const controller = new TreatmentGoalsController();
-router.post("/:treatmentplanId", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.createTreatmentGoals(req, res)
+router.post(
+  "/:treatmentplanId",
+  authenticate,
+  authorize("ADMIN"),
+  validateRequest(treatmentGoalsSchema),
+  (req, res) => controller.createTreatmentGoals(req, res)
 );
 
 // Route to get all Treatment Goals for a patient
@@ -18,8 +22,11 @@ router.get("/:treatmentplanId", authenticate, authorize("ADMIN"), (req, res) =>
 );
 
 // Route to get a specific treatmentGoals by ID
-router.get("/:id/:treatmentplanId", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.getTreatmentGoalsById(req, res)
+router.get(
+  "/:id/:treatmentplanId",
+  authenticate,
+  authorize("ADMIN"),
+  (req, res) => controller.getTreatmentGoalsById(req, res)
 );
 
 // Route to Update specific treatmentGoals
@@ -32,8 +39,11 @@ router.put(
 );
 
 // Route to delete a specific treatmentGoals
-router.delete("/:id/:treatmentplanId", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.deleteTreatmentGoals(req, res)
+router.delete(
+  "/:id/:treatmentplanId",
+  authenticate,
+  authorize("ADMIN"),
+  (req, res) => controller.deleteTreatmentGoals(req, res)
 );
 
 export default router;
@@ -42,28 +52,28 @@ export default router;
  * /api/treatmentGoals/{treatmentplanId}:
  *   get:
  *     tags: [TreatmentGoals]
- *     summary: Get all treatmentGoals records for a patient
+ *     summary: Get all treatment Goals records for a patient
  *     parameters:
  *       - in: path
  *         name: treatmentplanId
  *         required: true
  *         schema:
  *           type: string
- *         description: Treatment Plan ID of the patient whose treatmentGoals records are being retrieved
+ *         description: Treatment Plan ID of the patient whose treatment Goals records are being retrieved
  *     responses:
  *       200:
- *         description: List of patient treatmentGoals records retrieved successfully
+ *         description: List of patient treatment Goals records retrieved successfully
  *
  *   post:
  *     tags: [TreatmentGoals]
- *     summary: Create new treatmentGoals for a patient
+ *     summary: Create new treatment Goals for a patient
  *     parameters:
  *       - in: path
  *         name: treatmentplanId
  *         required: true
  *         schema:
  *           type: string
- *         description: Treatment Plan ID of the patient for whom treatmentGoals is being created
+ *         description: Treatment Plan ID of the patient for whom treatment Goals is being created
  *     requestBody:
  *       required: true
  *       content:
@@ -73,43 +83,27 @@ export default router;
  *             properties:
  *               name:
  *                 type: string
- *               startTime:
+ *               targetDate:
  *                 type: string
- *                 format: date-time
- *               stepdownServices:
+ *                 format: date
+ *               description:
  *                 type: string
- *               dischargeGoals:
- *                 type: string
- *               agencies:
- *                 type: string
- *               endTime:
- *                 type: string
- *                 format: date-time
- *               abilities:
- *                 type: string
- *               preferences:
- *                 type: string
- *               service:
- *                 type: string
- *               placeOfService:
- *                 type: string
- *               maintenanceRecommendation:
- *                 type: string
- *               strength:
- *                 type: string
- *               needs:
+ *               comments:
  *                 type: string
  *               endDate:
  *                 type: string
  *                 format: date
+ *               startDate:
+ *                 type: string
+ *                 format: date
  *     responses:
  *       201:
- *         description: TreatmentGoals record created successfully
+ *         description: Treatment Goals record created successfully
  *
  * /api/treatmentGoals/{id}/{treatmentplanId}:
  *   get:
  *     tags: [TreatmentGoals]
- *     summary: Get a specific treatmentGoals record by patient ID and treatmentGoals ID
+ *     summary: Get a specific treatment Goals record by patient ID and treatment Goals ID
  *     parameters:
  *       - in: path
  *         name: treatmentplanId
@@ -122,14 +116,14 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: Treatment goal ID of the treatmentGoals record
+ *         description: Treatment goal ID of the treatment Goals record
  *     responses:
  *       200:
- *         description: TreatmentGoals record retrieved successfully
+ *         description: Treatment Goals record retrieved successfully
  *
  *   put:
  *     tags: [TreatmentGoals]
- *     summary: Update treatmentGoals record for a patient
+ *     summary: Update treatment Goals record for a patient
  *     parameters:
  *       - in: path
  *         name: treatmentplanId
@@ -142,37 +136,36 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: Treatment goal ID of the treatmentGoals record to be updated
+ *         description: Treatment goal ID of the treatment Goals record to be updated
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               treatmentGoalsType:
+ *             properties:    
+ *               name:
  *                 type: string
- *               policyNumber:
- *                 type: string
- *               startDate:
+ *               targetDate:
  *                 type: string
  *                 format: date
+ *               description:
+ *                 type: string
+ *               comments:
+ *                 type: string
  *               endDate:
  *                 type: string
  *                 format: date
- *               status:
+ *               startDate:
  *                 type: string
- *                 enum: [PRIMARY, COPAY]
- *               eligibilityStatus:
- *                 type: string
- *                 enum: [PENDING, ELIGIBLE, INELIGIBLE, UNDER_REVIEW, EXPIRED, REVOKED]
+ *                 format: date       
  *     responses:
  *       200:
- *         description: TreatmentGoals record updated successfully
+ *         description: Treatment Goals record updated successfully
  *
  *   delete:
  *     tags: [TreatmentGoals]
- *     summary: Delete a specific treatmentGoals record
+ *     summary: Delete a specific treatment Goals record
  *     parameters:
  *       - in: path
  *         name: treatmentplanId
@@ -185,8 +178,8 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: Treatment goal ID of the treatmentGoals record to be deleted
+ *         description: Treatment goal ID of the treatment Goals record to be deleted
  *     responses:
  *       204:
- *         description: TreatmentGoals record deleted successfully
+ *         description: Treatment Goals record deleted successfully
  */

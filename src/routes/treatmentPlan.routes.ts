@@ -8,8 +8,12 @@ import { authenticate, authorize } from "../middleware/auth.middleware";
 
 const router = Router();
 const controller = new TreatmentPlanController();
-router.post("/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.createTreatmentPlan(req, res)
+router.post(
+  "/:patientid",
+  authenticate,
+  authorize("ADMIN"),
+  validateRequest(treatmentPlanSchema),
+  (req, res) => controller.createTreatmentPlan(req, res)
 );
 
 // Route to get all TreatmentPlans for a patient

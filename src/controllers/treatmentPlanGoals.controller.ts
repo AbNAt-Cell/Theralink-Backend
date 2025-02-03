@@ -15,7 +15,7 @@ export class TreatmentGoalsController {
           startDate: new Date(startDate),
           endDate: new Date(endDate),
           targetDate: new Date(targetDate),
-          patient: {
+          treatmentplan: {
             connect: { id: treatmentplanId },
           },
         },

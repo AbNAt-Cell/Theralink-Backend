@@ -24,7 +24,7 @@ export class MedicationAdminstrationController {
         });
 
       res.status(201).json({
-        message: "MedicationAdminstration created successfully",
+        message: "Medication Adminstration created successfully",
         MedicationAdminstration: newMedicationAdminstration,
       });
     } catch (error) {
@@ -65,10 +65,10 @@ export class MedicationAdminstrationController {
         MedicationAdminstrations,
       });
     } catch (error) {
-      console.error("Get MedicationAdminstrations error:", error);
+      console.error("Get Medication Adminstrations error:", error);
       res
         .status(500)
-        .json({ error: "Failed to fetch MedicationAdminstrations" });
+        .json({ error: "Failed to fetch Medication Adminstrations" });
     }
   }
 
@@ -85,7 +85,7 @@ export class MedicationAdminstrationController {
         });
 
       if (!MedicationAdminstration) {
-        res.status(404).json({ error: "MedicationAdminstration not found" });
+        res.status(404).json({ error: "Medication Adminstration not found" });
         return;
       }
 
@@ -94,7 +94,7 @@ export class MedicationAdminstrationController {
       console.error("Get MedicationAdminstration error:", error);
       res
         .status(500)
-        .json({ error: "Failed to fetch MedicationAdminstration" });
+        .json({ error: "Failed to fetch Medication Adminstration" });
     }
   }
 
@@ -115,14 +115,14 @@ export class MedicationAdminstrationController {
         });
 
       res.status(200).json({
-        message: "MedicationAdminstration updated successfully",
+        message: "Medication Adminstration updated successfully",
         MedicationAdminstration,
       });
     } catch (error) {
       console.error("Update MedicationAdminstration error:", error);
       res
         .status(500)
-        .json({ error: "Failed to update MedicationAdminstration" });
+        .json({ error: "Failed to update Medication Adminstration" });
     }
   }
 
@@ -139,7 +139,7 @@ export class MedicationAdminstrationController {
         });
 
       if (!MedicationAdminstration) {
-        res.status(404).json({ error: "MedicationAdminstration not found" });
+        res.status(404).json({ error: "Medication Adminstration not found" });
         return;
       }
 
@@ -151,10 +151,10 @@ export class MedicationAdminstrationController {
         message: "MedicationAdminstration deleted successfully",
       });
     } catch (error) {
-      console.error("Delete MedicationAdminstration error:", error);
+      console.error("Delete Medication Adminstration error:", error);
       res
         .status(500)
-        .json({ error: "Failed to delete MedicationAdminstration" });
+        .json({ error: "Failed to delete Medication Adminstration" });
     }
   }
 }
