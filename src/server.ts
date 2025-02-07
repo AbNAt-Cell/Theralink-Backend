@@ -1,4 +1,4 @@
-import { app } from './app';
+import { httpServer } from './app';
 import { BackupService } from './services/backup.service'
 
 const backupService = new BackupService()
@@ -13,7 +13,7 @@ setInterval(() => {
 // Backup on startup
 backupService.createBackup()
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
