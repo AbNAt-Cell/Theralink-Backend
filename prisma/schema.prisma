@@ -206,13 +206,11 @@ model Patient {
   document Document[]
   service Service[]
   physician Physician[]
-  
   immunization Immunization[]
   patientFile PatientFile[]
   parentContact ParentContact[]
   collateralContact CollateralContact[]
   contactNote ContactNote[]
-
   educationBackground EducationBackground[]
   employment Employment[]
   socialDeterminants SocialDeterminants[]
@@ -412,11 +410,13 @@ model ParentContact {
   id           String    @id @default(uuid())
   firstName     String
   lastName      String
-  relationship String   
+  relationship contactedStatus   
   phone        String
   email        String?
   city      String?   
   state      String?   
+  address    String?
+  comments      String?   
   patientId    String
   patient      Patient   @relation(fields: [patientId], references: [id],  onDelete: Cascade)
   

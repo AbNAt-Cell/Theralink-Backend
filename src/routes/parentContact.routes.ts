@@ -86,8 +86,16 @@ export default router;
  *                 type: string
  *               city:
  *                 type: string
- *               state:
+ *               address:
  *                 type: string
+ *               state:
+ *                 type: string 
+ *               comments:
+ *                 type: string
+ *               relationship:
+ *                 type: string
+ *                 enum: [AUNT, BROTHER, CAREGIVER, CLIENT, COUSIN, DAUGHTER, FATHER]
+ *     responses:
  *     responses:
  *       201:
  *         description: ParentContact record created successfully
@@ -148,8 +156,15 @@ export default router;
  *                 type: string
  *               city:
  *                 type: string
- *               state:
+ *               address:
  *                 type: string
+ *               state:
+ *                 type: string 
+ *               comments:
+ *                 type: string
+ *               relationship:
+ *                 type: string
+ *                 enum: [AUNT, BROTHER, CAREGIVER, CLIENT, COUSIN, DAUGHTER, FATHER]
  *     responses:
  *       200:
  *         description: ParentContact record updated successfully
