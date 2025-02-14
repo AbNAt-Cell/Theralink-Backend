@@ -272,11 +272,11 @@ model Diagnosis {
 
 model Document {
   id          String   @id @default(uuid())
+  template   String
+  author   String
+  client   String
+  date   DateTime
   patientId   String
-  filePath    String
-  fileType    String
-  description String?
-
   patient     Patient   @relation(fields: [patientId], references: [id],  onDelete: Cascade)
 
   createdAt   DateTime  @default(now())
@@ -616,8 +616,6 @@ model Questionnaire {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
-
-
 
 model Discharge {
   id          String   @id @default(uuid())

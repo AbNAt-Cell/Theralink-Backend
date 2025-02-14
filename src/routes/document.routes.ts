@@ -73,14 +73,15 @@ export default router;
  *           schema:
  *             type: object
  *             properties:
- *               filePath:
+ *               template:
  *                 type: string
- *               fileType:
+ *               author:
  *                 type: string
- *               fileUrl:
+ *               client:
  *                 type: string
- *               description:
+ *               date:
  *                 type: string
+ *                 format: date
  *     responses:
  *       201:
  *         description: Document record created successfully
@@ -129,14 +130,15 @@ export default router;
  *           schema:
  *             type: object
  *             properties:
- *               filePath:
+ *               template:
  *                 type: string
- *               fileType:
+ *               author:
  *                 type: string
- *               fileUrl:
+ *               client:
  *                 type: string
- *               description:
+ *               date:
  *                 type: string
+ *                 format: date
  *     responses:
  *       200:
  *         description: Document record updated successfully

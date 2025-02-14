@@ -1,6 +1,7 @@
 import Joi from 'joi';
 export const documentSchema = Joi.object({
-    filePath: Joi.string().required(),
-    fileType: Joi.string().required(),
-    description: Joi.date().optional(),
+    template: Joi.string().required(),
+    author: Joi.string().required(),
+    client: Joi.string().required(),
+    date: Joi.date().required(),
 });
