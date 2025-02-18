@@ -35,12 +35,12 @@ router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
 );
 
 export default router;
-
 /**
  * @swagger
  * /api/discharge/{patientId}:
  *   get:
- *     tags: [Discharge]
+ *     tags:
+ *       - Discharge
  *     summary: Get all Discharge records for a patient
  *     parameters:
  *       - in: path
@@ -54,15 +54,16 @@ export default router;
  *         description: List of patient Discharge records retrieved successfully
  *
  *   post:
- *     tags: [Discharge]
- *     summary: Create new Discharge for a patient
+ *     tags:
+ *       - Discharge
+ *     summary: Create a new Discharge record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the patient for whom Discharge is being created
+ *         description: ID of the patient for whom the Discharge record is being created
  *     requestBody:
  *       required: true
  *       content:
@@ -79,14 +80,21 @@ export default router;
  *                 format: date
  *               reason:
  *                 type: string
- *                 enum: [DECLINED, NO_IMPROVEMENT, REFERRED_OUT, REFUSED_TREATMENT, SUCCESSFULL_DISCHARGE, OTHER]
+ *                 enum:
+ *                   - DECLINED
+ *                   - NO_IMPROVEMENT
+ *                   - REFERRED_OUT
+ *                   - REFUSED_TREATMENT
+ *                   - SUCCESSFUL_DISCHARGE
+ *                   - OTHER
  *     responses:
  *       201:
  *         description: Discharge record created successfully
  *
  * /api/discharge/{id}/{patientId}:
  *   get:
- *     tags: [Discharge]
+ *     tags:
+ *       - Discharge
  *     summary: Get a specific Discharge record by patient ID and Discharge ID
  *     parameters:
  *       - in: path
@@ -106,8 +114,9 @@ export default router;
  *         description: Discharge record retrieved successfully
  *
  *   put:
- *     tags: [Discharge]
- *     summary: Update Discharge record for a patient
+ *     tags:
+ *       - Discharge
+ *     summary: Update a Discharge record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
@@ -137,13 +146,20 @@ export default router;
  *                 format: date
  *               reason:
  *                 type: string
- *                 enum: [DECLINED, NO_IMPROVEMENT, REFERRED_OUT, REFUSED_TREATMENT, SUCCESSFULL_DISCHARGE, OTHER
+ *                 enum:
+ *                   - DECLINED
+ *                   - NO_IMPROVEMENT
+ *                   - REFERRED_OUT
+ *                   - REFUSED_TREATMENT
+ *                   - SUCCESSFUL_DISCHARGE
+ *                   - OTHER
  *     responses:
  *       200:
  *         description: Discharge record updated successfully
  *
  *   delete:
- *     tags: [Discharge]
+ *     tags:
+ *       - Discharge
  *     summary: Delete a specific Discharge record
  *     parameters:
  *       - in: path

@@ -39,34 +39,35 @@ router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
 );
 
 export default router;
-
 /**
  * @swagger
  * /api/parentContacts/{patientId}:
  *   get:
- *     tags: [ParentContact]
- *     summary: Get all parentContacts records for a patient
+ *     tags:
+ *       - ParentContact
+ *     summary: Get all ParentContact records for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the patient whose parentContacts records are being retrieved
+ *         description: ID of the patient whose ParentContact records are being retrieved
  *     responses:
  *       200:
- *         description: List of patient parentContacts records retrieved successfully
+ *         description: List of patient ParentContact records retrieved successfully
  *
  *   post:
- *     tags: [ParentContact]
- *     summary: Create new parentContacts for a patient
+ *     tags:
+ *       - ParentContact
+ *     summary: Create a new ParentContact record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the patient for whom parentContacts is being created
+ *         description: ID of the patient for whom the ParentContact is being created
  *     requestBody:
  *       required: true
  *       content:
@@ -80,6 +81,14 @@ export default router;
  *                 type: string
  *               relationship:
  *                 type: string
+ *                 enum:
+ *                   - AUNT
+ *                   - BROTHER
+ *                   - CAREGIVER
+ *                   - CLIENT
+ *                   - COUSIN
+ *                   - DAUGHTER
+ *                   - FATHER
  *               phone:
  *                 type: string
  *               email:
@@ -89,21 +98,18 @@ export default router;
  *               address:
  *                 type: string
  *               state:
- *                 type: string 
+ *                 type: string
  *               comments:
  *                 type: string
- *               relationship:
- *                 type: string
- *                 enum: [AUNT, BROTHER, CAREGIVER, CLIENT, COUSIN, DAUGHTER, FATHER]
- *     responses:
  *     responses:
  *       201:
  *         description: ParentContact record created successfully
  *
  * /api/parentContacts/{id}/{patientId}:
  *   get:
- *     tags: [ParentContact]
- *     summary: Get a specific parentContacts record by patient ID and parentContacts ID
+ *     tags:
+ *       - ParentContact
+ *     summary: Get a specific ParentContact record by patient ID and ParentContact ID
  *     parameters:
  *       - in: path
  *         name: patientId
@@ -116,14 +122,15 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the parentContacts record
+ *         description: ID of the ParentContact record
  *     responses:
  *       200:
  *         description: ParentContact record retrieved successfully
  *
  *   put:
- *     tags: [ParentContact]
- *     summary: Update parentContacts record for a patient
+ *     tags:
+ *       - ParentContact
+ *     summary: Update a ParentContact record for a patient
  *     parameters:
  *       - in: path
  *         name: patientId
@@ -136,7 +143,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the parentContacts record to be updated
+ *         description: ID of the ParentContact record to be updated
  *     requestBody:
  *       required: true
  *       content:
@@ -150,6 +157,14 @@ export default router;
  *                 type: string
  *               relationship:
  *                 type: string
+ *                 enum:
+ *                   - AUNT
+ *                   - BROTHER
+ *                   - CAREGIVER
+ *                   - CLIENT
+ *                   - COUSIN
+ *                   - DAUGHTER
+ *                   - FATHER
  *               phone:
  *                 type: string
  *               email:
@@ -159,19 +174,17 @@ export default router;
  *               address:
  *                 type: string
  *               state:
- *                 type: string 
+ *                 type: string
  *               comments:
  *                 type: string
- *               relationship:
- *                 type: string
- *                 enum: [AUNT, BROTHER, CAREGIVER, CLIENT, COUSIN, DAUGHTER, FATHER]
  *     responses:
  *       200:
  *         description: ParentContact record updated successfully
  *
  *   delete:
- *     tags: [ParentContact]
- *     summary: Delete a specific parentContacts record
+ *     tags:
+ *       - ParentContact
+ *     summary: Delete a specific ParentContact record
  *     parameters:
  *       - in: path
  *         name: patientId
@@ -184,7 +197,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the parentContacts record to be deleted
+ *         description: ID of the ParentContact record to be deleted
  *     responses:
  *       204:
  *         description: ParentContact record deleted successfully

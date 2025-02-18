@@ -179,8 +179,6 @@ model Message {
   body String
   subject String
   image String? 
-  broadcast Boolean?
-  uniCast   Boolean
   room  String?
   toUserId String
   status MessageSentStatus?
