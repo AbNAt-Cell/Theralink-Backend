@@ -1,6 +1,7 @@
 import { Request as ExpressRequest, Response } from "express";
 import prisma from "../config/database";
 import { IUser } from "src/interfaces/auth.interfaces";
+import { MessageService } from "src/services/message.service";
 interface CustomInterface extends ExpressRequest {
   user?: IUser;
 }
@@ -16,7 +17,7 @@ export class MessageController {
   async createMessage(req: CustomInterface, res: Response) {
     try {
       const { body, ...rest } = req.body;
-      const user = req.user as IUser | undefined;
+      const user = req.user as IUser;
       const { conversationId } = req.params;
 
       const newMessage = await prisma.message.create({
@@ -57,7 +58,7 @@ export class MessageController {
    * @returns
    */
   async getMessages(req: CustomInterface, res: Response) {
-    const user = req.user as IUser | undefined;
+    const user = req.user as IUser;
     const { page = "1", limit = "10" } = req.query;
 
     const parsedPage = Math.max(1, parseInt(page as string, 10));
@@ -67,6 +68,7 @@ export class MessageController {
         orderBy: { createdAt: "desc" },
         where: {
           userId: user?.id,
+          isDeleted: false,
         },
         skip: (parsedPage - 1) * parsedLimit,
         take: parsedLimit,
@@ -85,6 +87,7 @@ export class MessageController {
       return res.status(500).json({ error: "Failed to fetch Messages" });
     }
   }
+  // new MessageService().updateMessageReadStatus
 
   /**
    * @description Get Message By Id
@@ -96,15 +99,14 @@ export class MessageController {
   async getMessageById(req: CustomInterface, res: Response) {
     try {
       const { id } = req.params;
-      const Message = await prisma.message.findUnique({
-        where: { id },
-      });
+      const messageService = new MessageService();
+      const message = await messageService.getSingleMessageService(id);
 
-      if (!Message) {
-        return res.status(404).json({ error: "Message not found" });
+      if (!message) {
+        return res.status(404).json({ error: "message not found" });
       }
 
-      return res.status(200).json({ Message });
+      return res.status(200).json({ message });
     } catch (error) {
       console.error("Get Message error:", error);
       return res.status(500).json({ error: "Failed to fetch Message" });
@@ -122,7 +124,7 @@ export class MessageController {
     try {
       const { id } = req.params;
       const { ...rest } = req.body;
-      const user = req.user as IUser | undefined;
+      const user = req.user as IUser;
       const Message = await prisma.message.update({
         where: { id, userId: user?.id },
         data: {
@@ -135,11 +137,177 @@ export class MessageController {
         Message,
       });
     } catch (error) {
-      console.error("Updateppointment error:", error);
-      return res.status(500).json({ error: "Failed to Updateppointment" });
+      console.error("update message error:", error);
+      return res.status(500).json({ error: "Failed to update message" });
     }
   }
 
+  /**
+   * @description Mark Message As Read
+   * @param req
+   * @param res
+   * @method PUT
+   * @returns
+   */
+  async markMessageAsRead(req: CustomInterface, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = req.user as IUser;
+      const messageService = new MessageService();
+      const newMessage = await messageService.updateMessageReadStatus(
+        id,
+        user?.id,
+        true
+      );
+
+      return res.status(200).json({
+        message: "Message updated successfully",
+        newMessage,
+      });
+    } catch (error) {
+      console.error("update message error:", error);
+      return res.status(500).json({ error: "Failed to update message" });
+    }
+  }
+
+  /**
+   * @description Mark Message As UnRead
+   * @param req
+   * @param res
+   * @method PUT
+   * @returns
+   */
+  async markMessageAsUnRead(req: CustomInterface, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = req.user as IUser;
+      const messageService = new MessageService();
+      const newMessage = await messageService.updateMessageReadStatus(
+        id,
+        user?.id,
+        false
+      );
+
+      return res.status(200).json({
+        message: "Message updated successfully",
+        newMessage,
+      });
+    } catch (error) {
+      console.error("update message error:", error);
+      return res.status(500).json({ error: "Failed to update message" });
+    }
+  }
+
+   /**
+   * @description Mark Message As Read
+   * @param req
+   * @param res
+   * @method PUT
+   * @returns
+   */
+   async markMessageAsImportant(req: CustomInterface, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = req.user as IUser;
+      const messageService = new MessageService();
+      const newMessage = await messageService.updateMessageImportantStatus(
+        id,
+        user?.id,
+        true
+      );
+
+      return res.status(200).json({
+        message: "Message updated successfully",
+        newMessage,
+      });
+    } catch (error) {
+      console.error("update message error:", error);
+      return res.status(500).json({ error: "Failed to update message" });
+    }
+  }
+
+  /**
+   * @description Mark Message As UnRead
+   * @param req
+   * @param res
+   * @method PUT
+   * @returns
+   */
+  async markMessageAsUnImportant(req: CustomInterface, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = req.user as IUser;
+      const messageService = new MessageService();
+      const newMessage = await messageService.updateMessageImportantStatus(
+        id,
+        user?.id,
+        false
+      );
+
+      return res.status(200).json({
+        message: "Message updated successfully",
+        newMessage,
+      });
+    } catch (error) {
+      console.error("update message error:", error);
+      return res.status(500).json({ error: "Failed to update message" });
+    }
+  }
+
+  /**
+   * @description Add Message to Thrash
+   * @param req
+   * @param res
+   * @method PUT
+   * @returns
+   */
+  async addMessageToTrash(req: CustomInterface, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = req.user as IUser;
+      const messageService = new MessageService();
+      const newMessage = await messageService.updateMessageDeletedStatus(
+        id,
+        user?.id,
+        true
+      );
+
+      return res.status(200).json({
+        message: "Message updated successfully",
+        newMessage,
+      });
+    } catch (error) {
+      console.error("update message error:", error);
+      return res.status(500).json({ error: "Failed to update message" });
+    }
+  }
+  /**
+   * @description Remove Message From Thrash
+   * @param req
+   * @param res
+   * @method PUT
+   * @returns
+   */
+  async removeMessageFromTrash(req: CustomInterface, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = req.user as IUser;
+      const messageService = new MessageService();
+      const newMessage = await messageService.updateMessageDeletedStatus(
+        id,
+        user?.id,
+        false
+      );
+
+      return res.status(200).json({
+        message: "Message updated successfully",
+        newMessage,
+      });
+    } catch (error) {
+      console.error("update message error:", error);
+      return res.status(500).json({ error: "Failed to update message" });
+    }
+  }
   /**
    * @description delete A Message
    * @param req
@@ -150,12 +318,19 @@ export class MessageController {
   async deleteMessage(req: CustomInterface, res: Response) {
     try {
       const { id } = req.params;
-      await prisma.message.delete({
-        where: { id },
-      });
+      const messageService = new MessageService();
+      const user = req.user as IUser;
+      const message = await messageService.getSingleMessageService(id);
+      if (!message) {
+        return res.status(404).json({ error: "message not found" });
+      }
+      const alertmessage = await messageService.deleteMessageService(
+        id,
+        user.id
+      );
 
       return res.status(200).json({
-        message: "Message deleted successfully",
+        message: alertmessage,
       });
     } catch (error) {
       console.error("Delete Message error:", error);
