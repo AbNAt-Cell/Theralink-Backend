@@ -1,16 +1,30 @@
-import { Router } from 'express';
-import { ClientSignatureController } from '../controllers/clientSignature.controller';
-import { validateRequest } from '../middleware/validate.middleware';
-import { clientSignatureSchema } from '../validators/clientSignature.validator';
+import { Router } from "express";
+import { ClientSignatureController } from "../controllers/clientSignature.controller";
+import { validateRequest } from "../middleware/validate.middleware";
+import { clientSignatureSchema } from "../validators/clientSignature.validator";
 
 const router = Router();
 const controller = new ClientSignatureController();
 
-router.post('/', validateRequest(clientSignatureSchema), (req, res) => void controller.createClientSignature(req, res));
-router.get('/', (req, res) => void controller.getClientSignatures(req, res));
-router.get('/:id', (req, res) => void controller.getClientSignatureById(req, res));
-router.put('/:id', validateRequest(clientSignatureSchema), (req, res) => void controller.updateClientSignature(req, res));
-router.delete('/:id', (req, res) => void controller.deleteClientSignature(req, res));
+router.post(
+  "/",
+  validateRequest(clientSignatureSchema),
+  (req, res) => void controller.createClientSignature(req, res)
+);
+router.get("/", (req, res) => void controller.getClientSignatures(req, res));
+router.get(
+  "/:id",
+  (req, res) => void controller.getClientSignatureById(req, res)
+);
+router.put(
+  "/:id",
+  validateRequest(clientSignatureSchema),
+  (req, res) => void controller.updateClientSignature(req, res)
+);
+router.delete(
+  "/:id",
+  (req, res) => void controller.deleteClientSignature(req, res)
+);
 
 export default router;
 
@@ -23,7 +37,7 @@ export default router;
  *     responses:
  *       200:
  *         description: List of clientSignature retrieved successfully
- * 
+ *
  *   post:
  *     tags: [Client Signature]
  *     summary: Create new patient
@@ -38,7 +52,7 @@ export default router;
  *                 type: string
  *               pin:
  *                 type: string
- * 
+ *
  * /api/clientSignature/{id}:
  *   get:
  *     tags: [Client Signature]
@@ -49,7 +63,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *   
+ *
  *   put:
  *     tags: [Client Signature]
  *     summary: Update patient
@@ -59,7 +73,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *   
+ *
  *   delete:
  *     tags: [Client Signature]
  *     summary: Delete patient
@@ -70,4 +84,3 @@ export default router;
  *         schema:
  *           type: string
  */
-

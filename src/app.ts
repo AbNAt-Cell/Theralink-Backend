@@ -32,11 +32,10 @@ import treatmentInterventionRoutes from "./routes/treatmentIntervention.routes";
 import dischargeRoutes from "./routes/discharge.routes";
 import medicalHistoryRoutes from "./routes/mediaclHistory.routes";
 import familyMedicalHistoryRoutes from "./routes/familyMedicalHistory.routes";
-// import { Cluster } from "ioredis";
+import messageRoutes from "./routes/message.routes";
+import conversationRoutes from "./routes/conversation.routes";
 import { createAdapter } from "@socket.io/redis-streams-adapter";
 import redisClient from "./config/redis";
-// import redisClient from "./config/redis";
-// familyhistory
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -89,8 +88,8 @@ app.use("/api/treatmentIntervention", treatmentInterventionRoutes);
 app.use("/api/discharge", dischargeRoutes);
 app.use("/api/medicalHistory", medicalHistoryRoutes);
 app.use("/api/familyMedicalHistory", familyMedicalHistoryRoutes);
-// familyMedicalHistoryRoutes
-// Health check route
+app.use("/api/message", messageRoutes);
+app.use("/api/conversation", conversationRoutes);
 
 const connections = new Map();
 io.on("connection", (socket) => {

@@ -1,6 +1,7 @@
-import prisma from "src/config/database";
+import prisma from "../config/database";
 
 export class MessageService {
+  
   async updateMessageReadStatus(id: string, userId: string, isRead: boolean) {
     const newMessage = await prisma.message.update({
       where: {
@@ -50,6 +51,7 @@ export class MessageService {
 
     return newMessage;
   }
+
   async getSingleMessageService(id: string) {
     const newMessage = await prisma.message.findUnique({
       where: {
@@ -59,6 +61,7 @@ export class MessageService {
 
     return newMessage;
   }
+
   async getAllMessageService(id: string, userId: string) {
     const newMessage = await prisma.message.findMany({
       where: {
@@ -69,6 +72,7 @@ export class MessageService {
 
     return newMessage;
   }
+
   async deleteMessageService(id: string, userId: string) {
     await prisma.message.delete({
       where: {
