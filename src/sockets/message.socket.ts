@@ -1,6 +1,6 @@
 import { Socket, Server } from "socket.io";
-import redisClient from "src/config/redis";
-import { MessageService } from "src/services/message.service";
+import redisClient from "../config/redis";
+import { MessageService } from "../services/message.service";
 export default function setupMessageSocket(io: Server) {
   io.on("connection", (socket: Socket) => {
     // console.log(`User Connected: ${socket.id}`);

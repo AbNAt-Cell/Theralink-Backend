@@ -1,6 +1,6 @@
 import { Request as ExpressRequest, Response } from "express";
 import prisma from "../config/database";
-import { IUser } from "src/interfaces/auth.interfaces";
+import { IUser } from "../interfaces/auth.interfaces";
 interface CustomInterface extends ExpressRequest {
   user?: IUser;
 }
