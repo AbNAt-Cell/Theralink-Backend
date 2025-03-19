@@ -1,22 +1,24 @@
 import { Socket, Server } from "socket.io";
+import redisClient from "src/config/redis";
 import { MessageService } from "src/services/message.service";
-
-const activeConnections = new Map();
 export default function setupMessageSocket(io: Server) {
   io.on("connection", (socket: Socket) => {
     // console.log(`User Connected: ${socket.id}`);
 
-    // join dm room Event
-    socket.on("register_user", async (data) => {
-      activeConnections.set(data.userId, socket.id);
-      console.log("Number of Connections", activeConnections);
+    /**
+     * @description Register user for dm
+     */
+    socket.on("register_user", async ({ userId }) => {
+      await redisClient.set(`active_users:$`, JSON.stringify(userId));
+      socket.join(`user:${userId}`); // join a room
+      io.emit;
     });
 
     // Send dm Event
     socket.on("send_dm", async (data) => {
       const { toUserId, body, userId, subject, conversationId } = data;
-      if (activeConnections.has(toUserId)) {
-        const toSockerUserId = activeConnections.get(toUserId);
+      const toSockerUserId = await redisClient.get(toUserId);
+      if (toSockerUserId) {
         const messageservice = new MessageService();
         let message = await messageservice.createMessageService(
           toUserId,
@@ -33,8 +35,9 @@ export default function setupMessageSocket(io: Server) {
     // Start Typing Event
     socket.on("user_typing", async (data) => {
       const { toUserId } = data;
-      if (activeConnections.has(toUserId)) {
-        const toSockerUserId = activeConnections.get(toUserId);
+      const toSockerUserId = await redisClient.get(toUserId);
+
+      if (toSockerUserId) {
         io.to(toSockerUserId).emit("user_typing", { user: data.userId });
       }
     });
@@ -42,8 +45,9 @@ export default function setupMessageSocket(io: Server) {
     // Stopped Typing Event
     socket.on("user_stopped_typing", async (data) => {
       const { toUserId } = data;
-      if (activeConnections.has(toUserId)) {
-        const toSockerUserId = activeConnections.get(toUserId);
+      const toSockerUserId = await redisClient.get(toUserId);
+
+      if (toSockerUserId) {
         io.to(toSockerUserId).emit("user_stopped_typing", {
           user: data.userId,
         });
