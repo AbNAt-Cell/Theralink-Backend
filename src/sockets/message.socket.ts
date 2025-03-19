@@ -9,7 +9,7 @@ export default function setupMessageSocket(io: Server) {
      * @description Register user for dm
      */
     socket.on("register_user", async ({ userId }) => {
-      await redisClient.set(`active_users:$`, JSON.stringify(userId));
+      await redisClient.set(`active_users:${userId}`, JSON.stringify(userId));
       socket.join(`user:${userId}`); // join a room
       io.emit;
     });
