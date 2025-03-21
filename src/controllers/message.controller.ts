@@ -19,6 +19,7 @@ export class MessageController {
       const { body, ...rest } = req.body;
       const user = req.user as IUser;
       const { conversationId } = req.params;
+      const messageService = new MessageService()
 
       const newMessage = await prisma.message.create({
         data: {
@@ -67,7 +68,7 @@ export class MessageController {
       const Messages = await prisma.message.findMany({
         orderBy: { createdAt: "desc" },
         where: {
-          userId: user?.id,
+          conversationId:req.params.conversationId,
           isDeleted: false,
         },
         skip: (parsedPage - 1) * parsedLimit,

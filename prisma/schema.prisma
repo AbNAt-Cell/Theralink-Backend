@@ -157,28 +157,35 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   // Relations
-  appointments  Appointment[]  // A user (healthcare provider) can have many appointments
-  // diagnosis   Diagnosis[]
-  conversation Conversation[]
+  appointments  Appointment[] 
+  conversations  ConversationParticipant[]
   sentMessages  Message[] @relation("SentMessages")   
   receivedMessages Message[] @relation("ToUserRelation") 
 }
 
 model Conversation {
-  id          String   @id @default(uuid())
-  lastMessage String
-  messages     Message[] 
-  userId   String
-  user     User   @relation(fields: [userId], references: [id],  onDelete: Cascade)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id          String                @id @default(uuid())
+  lastMessage String?               // Optional, updated dynamically
+  messages    Message[]             
+  participants ConversationParticipant[]
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+}
+
+model ConversationParticipant {
+  conversationId String
+  userId         String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt       DateTime     @default(now())
+  @@id([conversationId, userId]) 
 }
 
 
 model Message {
   id          String   @id @default(uuid())
   body String
-  subject String
+  subject String?
   image String? 
   room  String?
   toUserId String

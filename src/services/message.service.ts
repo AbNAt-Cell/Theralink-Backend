@@ -3,11 +3,11 @@ import prisma from "../config/database";
 export class MessageService {
   async createMessageService(
     body: string,
-    subject: string,
+    subject?: string,
     userId: string,
     conversationId: string,
     toUserId: string,
-    image: string
+    image?: string
   ) {
     const newMessage = await prisma.message.create({
       data: {
@@ -88,11 +88,10 @@ export class MessageService {
     return newMessage;
   }
 
-  async getAllMessageService(id: string, userId: string) {
+  async getAllMessageService(id: string) {
     const newMessage = await prisma.message.findMany({
       where: {
-        id,
-        userId,
+        conversationId:id,
       },
     });
 

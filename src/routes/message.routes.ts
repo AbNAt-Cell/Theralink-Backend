@@ -13,21 +13,20 @@ router.post(
   validateRequest(messageSchema),
   (req, res) => void controller.createMessage(req, res)
 );
+
 router.get(
-  "/",
+  "/:conversationId",
   authenticate,
   (req, res) => void controller.getMessages(req, res)
 );
-router.get(
-  "/:id",
-  authenticate,
-  (req, res) => void controller.getMessageById(req, res)
-);
+
 router.put(
   "/:id",
+  authenticate, // Added
   validateRequest(messageSchema),
   (req, res) => void controller.updateMessage(req, res)
 );
+
 router.delete(
   "/:id",
   authenticate,
@@ -38,13 +37,6 @@ export default router;
 /**
  * @swagger
  * /api/message:
- *   get:
- *     tags: [Message]
- *     summary: Get all messages
- *     responses:
- *       200:
- *         description: List of messages retrieved successfully
- * 
  *   post:
  *     tags: [Message]
  *     summary: Create new message
@@ -77,23 +69,24 @@ export default router;
  *     responses:
  *       201:
  *         description: Message record created successfully
- * 
- * /api/message/{id}:
+ *
+ * /api/message/{conversationId}:
  *   get:
  *     tags: [Message]
- *     summary: Get message by ID
+ *     summary: Get All message by conversation ID
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: conversationId
  *         required: true
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Message retrieved successfully
+ *         description: All User Message has been retrieved successfully
  *       404:
  *         description: Message not found
  *
+ * /api/message/{messageId}:
  *   put:
  *     tags: [Message]
  *     summary: Update message

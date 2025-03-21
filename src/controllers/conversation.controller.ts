@@ -8,34 +8,38 @@ interface CustomInterface extends ExpressRequest {
 export class ConversationController {
   /**
    * @description Create  A Conversationsrc/controllers/conversation.controller.ts
-   * @param req 
-   * @param res 
+   * @param req
+   * @param res
    * @method POST
-   * @returns 
+   * @returns
    */
   async createConversation(req: CustomInterface, res: Response) {
     try {
-      const { date, status, patientid, ...rest } = req.body;
-      const user = req.user as IUser | undefined;
+      const { lastMessage } = req.body;
+      const { patientid } = req.params;
+      const user = req.user as IUser;
 
       // Checking if there's an existing Conversation at the same time for a particular patient
       const conflictingConversation = await prisma.conversation.findFirst({
         where: {
-          userId: user?.id,
+          participants: {
+            every: { userId: { in: [user?.id, patientid] } },
+            some: { userId: user.id },
+          },
         },
       });
-
       if (conflictingConversation) {
         return res.status(400).json({
-          error: "This conversation already exists",
+          error: "Conversation already exists",
+          conversation: conflictingConversation,
         });
       }
 
       const newConversation = await prisma.conversation.create({
         data: {
-          ...rest,
-          user: {
-            connect: { id: user?.id },
+          lastMessage: lastMessage || "New conversation",
+          participants: {
+            create: [{ userId: user.id }, { userId: patientid }],
           },
         },
       });
@@ -52,34 +56,37 @@ export class ConversationController {
 
   /**
    * @description Get All Conversation of a User
-   * @param req 
-   * @param res 
+   * @param req
+   * @param res
    * @method GET
-   * @returns 
+   * @returns
    */
   async getConversations(req: CustomInterface, res: Response) {
-    const user = req.user as IUser | undefined;
+    const user = req.user as IUser;
     const { page = "1", limit = "10" } = req.query;
 
     const parsedPage = Math.max(1, parseInt(page as string, 10));
     const parsedLimit = Math.max(1, parseInt(limit as string, 10));
     try {
-      const Conversations = await prisma.conversation.findMany({
+      const conversations = await prisma.conversation.findMany({
         orderBy: { createdAt: "desc" },
-        where: {
-          userId: user?.id,
-        },
+        where: { participants: { some: { userId: user.id } } },
         skip: (parsedPage - 1) * parsedLimit,
         take: parsedLimit,
+        include: { participants: true, messages: { take: 5 } },
       });
       const totalCount = await prisma.conversation.count({
-        where: { userId: user?.id },
+        where: {
+          participants: {
+            some: { userId: user?.id },
+          },
+        },
       });
       return res.status(200).json({
         totalCount,
         totalPages: Math.ceil(totalCount / parsedLimit),
         currentPage: parsedPage,
-        Conversations,
+        conversations,
       });
     } catch (error) {
       console.error("Get Conversations error:", error);
@@ -89,18 +96,19 @@ export class ConversationController {
 
   /**
    * @description Get Conversation By Id
-   * @param req 
-   * @param res   
+   * @param req
+   * @param res
    * @method GET
-   * @returns 
+   * @returns
    */
   async getConversationById(req: CustomInterface, res: Response) {
     try {
       const { id } = req.params;
-      const conversation = await prisma.conversation.findUnique({
-        where: { id },
+      const user = req.user as IUser;
+      const conversation = await prisma.conversation.findFirst({
+        where: { id, participants: { some: { userId: user.id } } },
+        include: { participants: true, messages: true },
       });
-
       if (!conversation) {
         return res.status(404).json({ error: "Conversation not found" });
       }
@@ -114,21 +122,24 @@ export class ConversationController {
 
   /**
    * @description Update A Conversation
-   * @param req 
-   * @param res 
+   * @param req
+   * @param res
    * @method PUT
-   * @returns 
+   * @returns
    */
   async updateConversation(req: CustomInterface, res: Response) {
     try {
       const { id } = req.params;
-      const { ...rest } = req.body;
-      const user = req.user as IUser | undefined;
+      const { lastMessage } = req.body;
+      const user = req.user as IUser;
       const Conversation = await prisma.conversation.update({
-        where: { id, userId: user?.id },
-        data: {
-          ...rest,
+        where: {
+          id,
+          participants: {
+            some: { userId: user?.id },
+          },
         },
+        data: { lastMessage },
       });
 
       return res.status(200).json({
@@ -141,19 +152,19 @@ export class ConversationController {
     }
   }
 
-  
   /**
    * @description delete A Conversation
-   * @param req 
-   * @param res 
+   * @param req
+   * @param res
    * @method DELETE
-   * @returns 
+   * @returns
    */
   async deleteConversation(req: CustomInterface, res: Response) {
     try {
       const { id } = req.params;
+      const user = req.user as IUser;
       await prisma.conversation.delete({
-        where: { id },
+        where: { id, participants: { some: { userId: user.id } } },
       });
 
       return res.status(200).json({
