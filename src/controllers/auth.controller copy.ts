@@ -10,6 +10,7 @@ import {
 import { ILoginRequest, ISignupRequest } from '../interfaces/auth.interfaces';
 import { EmailService } from '../services/email.service';
 import { generateResetToken } from '../utils/auth.utils';
+import { Role } from '@prisma/client';
 
 
 export class AuthController {
@@ -32,13 +33,14 @@ export class AuthController {
             const username = generateUsername(email);
             const password = generatePassword();
             const hashedPassword = await hashPassword(password);
+            const roleEnum: Role = role as Role
 
             const user = await prisma.user.create({
                 data: {
                     email,
                     username,
                     password: hashedPassword,
-                    role
+                    role:roleEnum
                 }
             });
 

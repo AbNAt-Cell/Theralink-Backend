@@ -17,7 +17,7 @@ export default function setupMessageSocket(io: Server) {
     // Send dm Event
     socket.on("send_dm", async (data) => {
       const { toUserId, body, userId, subject, conversationId } = data;
-      const toSockerUserId = await redisClient.get(toUserId);
+      const toSockerUserId = await redisClient.get(`active_users:${toUserId}`);
       if (toSockerUserId) {
         const messageservice = new MessageService();
         let message = await messageservice.createMessageService(

@@ -2,7 +2,7 @@ export interface IUser {
     id: string;
     email: string;
     username: string;
-    role: 'ADMIN' | 'CLIENT';
+    role: 'ADMIN' | 'CLIENT' | 'STAFF';
     createdAt: Date;
     updatedAt: Date;
 }
@@ -14,7 +14,7 @@ export interface ILoginRequest {
 
 export interface ISignupRequest {
     email: string;
-    role: 'ADMIN' | 'CLIENT';
+    role: 'ADMIN' | 'CLIENT' | 'STAFF';
 }
 
 export interface IAuthResponse {

@@ -34,6 +34,7 @@ import medicalHistoryRoutes from "./routes/mediaclHistory.routes";
 import familyMedicalHistoryRoutes from "./routes/familyMedicalHistory.routes";
 import messageRoutes from "./routes/message.routes";
 import conversationRoutes from "./routes/conversation.routes";
+import userRoutes from "./routes/user.routes";
 import { createAdapter } from "@socket.io/redis-streams-adapter";
 import redisClient from "./config/redis";
 import setupMessageSocket from "./sockets/message.socket";
@@ -91,7 +92,7 @@ app.use("/api/medicalHistory", medicalHistoryRoutes);
 app.use("/api/familyMedicalHistory", familyMedicalHistoryRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/conversation", conversationRoutes);
-
+app.use("/api/users", userRoutes);
 setupMessageSocket(io)
 
 app.get("/", (_req, res) => {
