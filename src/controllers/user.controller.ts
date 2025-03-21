@@ -1,20 +1,30 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
+import { Role } from "@prisma/client";
 
 export class UserController {
   async getUsers(req: Request, res: Response) {
     try {
       // pagination
       //   request queries
-      const { username, limit = "9", page = "1" } = req.query;
+      const { username, role, email, limit = "9", page = "1" } = req.query;
 
       const parsedLimit = Number(limit) || 9;
       const parsedPage = Number(page) || 1;
       const usernameFilter =
         typeof username === "string" ? { username } : undefined;
+      const emailFilter = typeof email === "string" ? { email } : undefined;
+      const roleFilter =
+        typeof role === "string" && Object.values(Role).includes(role as Role)
+          ? {
+              role: { equals: role as Role },
+            }
+          : undefined;
       //   queryObject
       const queryObject = {
         ...usernameFilter,
+        ...emailFilter,
+        ...roleFilter,
       };
       const user = await prisma.user.findMany({
         orderBy: { createdAt: "desc" },
