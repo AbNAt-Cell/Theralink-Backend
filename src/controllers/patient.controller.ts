@@ -11,7 +11,7 @@ export class PatientController {
         dateOfBirth,
         insurance,
         gender,
-        phone, // Explicitly destructure phone
+        phone,
         address,
         race,
         ...rest
@@ -37,18 +37,20 @@ export class PatientController {
       });
       const insuranceService = new InsuranceService();
       if (newPatient) {
-        await insuranceService.createInsuranceService(
+       const newInsurance =   await insuranceService.createInsuranceService(
           insurance.startDate,
           insurance.endDate!,
           newPatient?.id,
           insurance.policyNumber,
           insurance.insuranceType
         );
+        console.log("newInsurance", newInsurance)
       }
 
       return res.status(201).json({
         message: "Patient created successfully",
         patient: newPatient,
+        
       });
     } catch (error) {
       console.error("Create patient error:", error);
