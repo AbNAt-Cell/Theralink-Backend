@@ -1,7 +1,7 @@
 import { Request as ExpressRequest, Response } from "express";
 import prisma from "../config/database";
 import { IUser } from "../interfaces/auth.interfaces";
-import { MessageService } from "../services/message.service";
+// import { MessageService } from "../services/message.service";
 interface CustomInterface extends ExpressRequest {
   user?: IUser;
 }
@@ -19,7 +19,7 @@ export class MessageController {
       const { body, ...rest } = req.body;
       const user = req.user as IUser;
       const { conversationId } = req.params;
-      const messageService = new MessageService()
+      // const messageService = new MessageService()
 
       const newMessage = await prisma.message.create({
         data: {
