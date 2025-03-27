@@ -223,7 +223,7 @@ model Patient {
   phone         String?
   gender        Gender
   race        Race?
-  startDate     DateTime?
+  startDate     DateTime
   dateOfBirth   DateTime
   address       Json?
 

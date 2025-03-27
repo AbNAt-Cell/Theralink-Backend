@@ -26,6 +26,7 @@ export interface IPatient {
   gender: Gender;
   race?: Race | null;
   dateOfBirth: Date;
+  startDate:Date;
   address: {
     street: string;
     city: string;

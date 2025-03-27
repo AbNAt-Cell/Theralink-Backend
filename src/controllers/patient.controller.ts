@@ -12,6 +12,7 @@ export class PatientController {
         insurance,
         gender,
         phone,
+        startDate,
         address,
         race,
         ...rest
@@ -25,6 +26,7 @@ export class PatientController {
           email,
           phone: phone || undefined,
           dateOfBirth: new Date(dateOfBirth),
+          startDate: new Date(startDate),
           address: address
             ? {
                 street: address.street,
