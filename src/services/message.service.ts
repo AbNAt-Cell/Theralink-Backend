@@ -9,6 +9,29 @@ export class MessageService {
     toUserId: string,
     image?: string
   ) {
+    // Validating sender (userId) exists
+    const sender = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!sender) {
+      throw new Error(`Sender with userId ${userId} does not exist`);
+    }
+
+    // Validating recipient (toUserId) exists
+    const recipient = await prisma.user.findUnique({
+      where: { id: toUserId },
+    });
+    if (!recipient) {
+      throw new Error(`Recipient with toUserId ${toUserId} does not exist`);
+    }
+
+    // Validating conversation exists
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+    });
+    if (!conversation) {
+      throw new Error(`Conversation with conversationId ${conversationId} does not exist`);
+    }
     const newMessage = await prisma.message.create({
       data: {
         body,

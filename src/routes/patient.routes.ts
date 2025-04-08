@@ -2,15 +2,16 @@ import { Router } from 'express';
 import { PatientController } from '../controllers/patient.controller';
 import { validateRequest } from '../middleware/validate.middleware';
 import { patientSchema } from '../validators/patient.validator';
+import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 const controller = new PatientController();
 
-router.post('/', validateRequest(patientSchema), (req, res) => void controller.createPatient(req, res));
-router.get('/', (req, res) => void controller.getPatients(req, res));
-router.get('/:id', (req, res) => void controller.getPatientById(req, res));
-router.put('/:id', validateRequest(patientSchema), (req, res) => void controller.updatePatient(req, res));
-router.delete('/:id', (req, res) => void controller.deletePatient(req, res));
+router.post('/', authenticate, validateRequest(patientSchema), (req, res) => void controller.createPatient(req, res));
+router.get('/',authenticate, (req, res) => void controller.getPatients(req, res));
+router.get('/:id',authenticate, (req, res) => void controller.getPatientById(req, res));
+router.put('/:id',authenticate, validateRequest(patientSchema), (req, res) => void controller.updatePatient(req, res));
+router.delete('/:id',authenticate, (req, res) => void controller.deletePatient(req, res));
 
 export default router;
 

@@ -1,167 +1,155 @@
-import { Request, Response } from 'express';
-import prisma from '../config/database';
-import { 
-    generateUsername, 
-    generatePassword, 
-    hashPassword, 
-    comparePasswords, 
-    generateToken 
-} from '../utils/auth.utils';
-import { ILoginRequest, ISignupRequest } from '../interfaces/auth.interfaces';
-import { EmailService } from '../services/email.service';
-import { generateResetToken } from '../utils/auth.utils';
-import { Role } from '@prisma/client';
-
+import { Request, Response } from "express";
+import prisma from "../config/database";
+import {
+  hashPassword,
+  comparePasswords,
+  generateToken,
+} from "../utils/auth.utils";
+import { ILoginRequest, ISignupRequest } from "../interfaces/auth.interfaces";
+import { EmailService } from "../services/email.service";
+import { generateResetToken } from "../utils/auth.utils";
+import { signupService } from "../services/auth.service";
 
 export class AuthController {
-    private emailService: EmailService;
+  private emailService: EmailService;
 
-    constructor() {
-        this.emailService = new EmailService();
-        console.log('Email service initialized');  // Add this log
+  constructor() {
+    this.emailService = new EmailService();
+    console.log("Email service initialized"); // Add this log
+  }
+
+  signup = async (
+    req: Request<{}, {}, ISignupRequest>,
+    res: Response
+  ): Promise<Response> => {
+    try {
+      const { email, role } = req.body;
+
+      const existingUser = await prisma.user.findUnique({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({ error: "Email already registered" });
+      }
+
+      const { user, token, username, password } = await signupService(
+        email,
+        role,
+        prisma,
+        true
+      );
+      return res.status(201).json({
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+        credentials: {
+          username,
+          password,
+        },
+        token,
+      });
+    } catch (error) {
+      console.error("Signup error:", error);
+      return res.status(500).json({ error: "Failed to create user" });
     }
+  };
+  login = async (
+    req: Request<{}, {}, ILoginRequest>,
+    res: Response
+  ): Promise<Response> => {
+    try {
+      const { username, password } = req.body;
 
-    signup = async (req: Request<{}, {}, ISignupRequest>, res: Response): Promise<Response> => {
-        try {
-            const { email, role } = req.body;
+      const user = await prisma.user.findUnique({ where: { username } });
+      if (!user) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
 
-            const existingUser = await prisma.user.findUnique({ where: { email } });
-            if (existingUser) {
-                return res.status(400).json({ error: 'Email already registered' });
-            }
+      const isValidPassword = await comparePasswords(password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
 
-            const username = generateUsername(email);
-            const password = generatePassword();
-            const hashedPassword = await hashPassword(password);
-            const roleEnum: Role = role as Role
+      const token = generateToken(user);
 
-            const user = await prisma.user.create({
-                data: {
-                    email,
-                    username,
-                    password: hashedPassword,
-                    role:roleEnum
-                }
-            });
+      return res.status(200).json({
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+        token,
+      });
+    } catch (error) {
+      return res.status(500).json({ error: "Login failed" });
+    }
+  };
 
-            const token = generateToken(user);
+  forgotPassword = async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      const user = await prisma.user.findUnique({ where: { email } });
 
-            // Send email with credentials
-            console.log('Attempting to send email...');
-            await this.emailService.sendCredentials(email, username, password);
-            console.log('Email sent successfully');
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
 
-            return res.status(201).json({
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    username: user.username,
-                    role: user.role,
-                    createdAt: user.createdAt,
-                    updatedAt: user.updatedAt
-                },
-                credentials: {
-                    username,
-                    password
-                },
-                token
-            });
-        } catch (error) {
-            console.error('Signup error:', error);
-            return res.status(500).json({ error: 'Failed to create user' });
-        }
-    };
-    login = async (req: Request<{}, {}, ILoginRequest>, res: Response): Promise<Response> => {
-        try {
-            const { username, password } = req.body;
+      const resetToken = generateResetToken();
+      const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
 
-            const user = await prisma.user.findUnique({ where: { username } });
-            if (!user) {
-                return res.status(401).json({ error: 'Invalid credentials' });
-            }
+      await prisma.user.update({
+        where: { email },
+        data: { resetToken, resetTokenExpiry },
+      });
 
-            const isValidPassword = await comparePasswords(password, user.password);
-            if (!isValidPassword) {
-                return res.status(401).json({ error: 'Invalid credentials' });
-            }
+      await this.emailService.sendPasswordReset(email, resetToken);
 
-            const token = generateToken(user);
+      return res.status(200).json({ message: "Password reset email sent" });
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      return res.status(500).json({ error: "Failed to process request" });
+    }
+  };
 
-            return res.status(200).json({
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    username: user.username,
-                    role: user.role,
-                    createdAt: user.createdAt,
-                    updatedAt: user.updatedAt
-                },
-                token
-            });
-        } catch (error) {
-            return res.status(500).json({ error: 'Login failed' });
-        }
-    };
+  resetPassword = async (req: Request, res: Response) => {
+    try {
+      const { token, password } = req.body;
 
-    forgotPassword = async (req: Request, res: Response) => {
-        try {
-            const { email } = req.body;
-            const user = await prisma.user.findUnique({ where: { email } });
-            
-            if (!user) {
-                return res.status(404).json({ error: 'User not found' });
-            }
+      const user = await prisma.user.findFirst({
+        where: {
+          resetToken: token,
+          resetTokenExpiry: { gt: new Date() },
+        },
+      });
 
-            const resetToken = generateResetToken();
-            const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
+      if (!user) {
+        return res.status(400).json({ error: "Invalid or expired token" });
+      }
 
-            await prisma.user.update({
-                where: { email },
-                data: { resetToken, resetTokenExpiry }
-            });
+      const hashedPassword = await hashPassword(password);
 
-            await this.emailService.sendPasswordReset(email, resetToken);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          password: hashedPassword,
+          resetToken: null,
+          resetTokenExpiry: null,
+        },
+      });
 
-            return res.status(200).json({ message: 'Password reset email sent' });
-        } catch (error) {
-            console.error('Forgot password error:', error);
-            return res.status(500).json({ error: 'Failed to process request' });
-        }
-    };
+      // Send confirmation email
+      await this.emailService.sendPasswordChangeConfirmation(user.email);
 
-    resetPassword = async (req: Request, res: Response) => {
-        try {
-            const { token, password } = req.body;
-            
-            const user = await prisma.user.findFirst({
-                where: {
-                    resetToken: token,
-                    resetTokenExpiry: { gt: new Date() }
-                }
-            });
-    
-            if (!user) {
-                return res.status(400).json({ error: 'Invalid or expired token' });
-            }
-    
-            const hashedPassword = await hashPassword(password);
-    
-            await prisma.user.update({
-                where: { id: user.id },
-                data: {
-                    password: hashedPassword,
-                    resetToken: null,
-                    resetTokenExpiry: null
-                }
-            });
-    
-            // Send confirmation email
-            await this.emailService.sendPasswordChangeConfirmation(user.email);
-    
-            return res.status(200).json({ message: 'Password updated successfully' });
-        } catch (error) {
-            console.error('Reset password error:', error);
-            return res.status(500).json({ error: 'Failed to reset password' });
-        }
-    };
-}    
+      return res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+      console.error("Reset password error:", error);
+      return res.status(500).json({ error: "Failed to reset password" });
+    }
+  };
+}

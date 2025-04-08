@@ -13,6 +13,7 @@ export class ConversationController {
    * @method POST
    * @returns
    */
+  // 8cc773ea-1eb3-49e7-a876-b3c44ff3c0ff
   async createConversation(req: CustomInterface, res: Response) {
     try {
       const { lastMessage } = req.body;
@@ -73,7 +74,7 @@ export class ConversationController {
         where: { participants: { some: { userId: user.id } } },
         skip: (parsedPage - 1) * parsedLimit,
         take: parsedLimit,
-        include: { participants: true, messages: { take: 5 } },
+        include: { participants: true},
       });
       const totalCount = await prisma.conversation.count({
         where: {

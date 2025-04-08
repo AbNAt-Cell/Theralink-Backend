@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../config/database";
 import { IPatient } from "../interfaces/patient.interfaces";
 import { InsuranceService } from "../services/insurance.service";
+import { signupService } from "../services/auth.service";
 
 export class PatientController {
   async createPatient(req: Request<{}, {}, IPatient>, res: Response) {
@@ -18,41 +19,63 @@ export class PatientController {
         ...rest
       } = req.body;
       //  const insuranceData =  {}
-      const newPatient = await prisma.patient.create({
-        data: {
-          ...rest,
-          gender,
-          race,
-          email,
-          phone: phone || undefined,
-          dateOfBirth: new Date(dateOfBirth),
-          startDate: new Date(startDate),
-          address: address
-            ? {
-                street: address.street,
-                city: address.city,
-                state: address.state,
-                zipCode: address.zipCode,
-              }
-            : undefined,
+      const [updatedPatient, _newInsurance, _newUser] = await prisma.$transaction(
+        async (tx) => {
+          // Step 1: Create the Patient
+          const newPatient = await tx.patient.create({
+            data: {
+              ...rest,
+              gender,
+              race,
+              email,
+              phone: phone || undefined,
+              dateOfBirth: new Date(dateOfBirth),
+              startDate: new Date(startDate),
+              address: address
+                ? {
+                    street: address.street,
+                    city: address.city,
+                    state: address.state,
+                    zipCode: address.zipCode,
+                  }
+                : undefined,
+            },
+          });
+
+          // Step 2: Create Insurance (if provided)
+          const insuranceService = new InsuranceService();
+          let newInsurance = null;
+          if (insurance) {
+            newInsurance = await insuranceService.createInsuranceService(
+              insurance.startDate,
+              insurance.endDate!,
+              newPatient.id,
+              insurance.policyNumber,
+              insurance.insuranceType,
+              tx
+            );
+          }
+
+          // Step 3: Create User
+          const newUser = await signupService(email, "CLIENT", tx, false);
+
+          // Step 4: Update Patient with userId
+          const updatedPatient = await tx.patient.update({
+            where: { id: newPatient.id },
+            data: { userId: newUser.user.id! as string },
+          });
+
+          return [updatedPatient, newInsurance, newUser]; // Return results from transaction
         },
-      });
-      const insuranceService = new InsuranceService();
-      if (newPatient) {
-       const newInsurance =   await insuranceService.createInsuranceService(
-          insurance.startDate,
-          insurance.endDate!,
-          newPatient?.id,
-          insurance.policyNumber,
-          insurance.insuranceType
-        );
-        console.log("newInsurance", newInsurance)
-      }
+        { maxWait: 10000, timeout: 15000 }
+      );
+
+      // console.log("newInsurance", newInsurance);
+      // console.log("newUser", newUser);
 
       return res.status(201).json({
         message: "Patient created successfully",
-        patient: newPatient,
-        
+        patient: updatedPatient,
       });
     } catch (error) {
       console.error("Create patient error:", error);

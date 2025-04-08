@@ -164,6 +164,8 @@ model User {
   conversations  ConversationParticipant[]
   sentMessages  Message[] @relation("SentMessages")   
   receivedMessages Message[] @relation("ToUserRelation") 
+  patient       Patient?  @relation("UserToPatient")
+  patientId     String?   @unique
 }
 
 model Conversation {
@@ -255,6 +257,8 @@ model Patient {
   discharge Discharge[]
   medicalHistory MedicalHistory[]
   familyMedicalHistory FamilyMedicalHistory[]
+  userId        String?   @unique
+  user          User?     @relation(name:"UserToPatient", fields: [userId], references: [id])
 }
 
 model Appointment {
