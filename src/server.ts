@@ -3,7 +3,7 @@ import { BackupService } from './services/backup.service'
 
 const backupService = new BackupService()
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 // Daily backup
 setInterval(() => {

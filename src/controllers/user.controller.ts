@@ -5,36 +5,54 @@ import { Role } from "@prisma/client";
 export class UserController {
   async getUsers(req: Request, res: Response) {
     try {
-      // pagination
-      //   request queries
+      // Request queries
       const { username, role, email, limit = "9", page = "1" } = req.query;
-
+  
+      // Parse pagination parameters
       const parsedLimit = Number(limit) || 9;
       const parsedPage = Number(page) || 1;
-      const usernameFilter =
-        typeof username === "string" ? { username } : undefined;
-      const emailFilter = typeof email === "string" ? { email } : undefined;
-      const roleFilter =
-        typeof role === "string" && Object.values(Role).includes(role as Role)
-          ? {
-              role: { equals: role as Role },
-            }
-          : undefined;
-      //   queryObject
-      const queryObject = {
-        ...usernameFilter,
-        ...emailFilter,
-        ...roleFilter,
-      };
-      const user = await prisma.user.findMany({
+  
+      // Build where clause dynamically
+      const where: any = {};
+  
+      if (typeof username === "string" && username.trim()) {
+        where.username = {
+          contains: username,
+          mode: "insensitive",
+        };
+      }
+  
+      if (typeof email === "string" && email.trim()) {
+        where.email = {
+          contains: email,
+          mode: "insensitive",
+        };
+      }
+  
+      if (typeof role === "string" && Object.values(Role).includes(role as Role)) {
+        where.role = role as Role;
+      }
+  
+      // Fetch users with Prisma
+      const users = await prisma.user.findMany({
+        where,
         orderBy: { createdAt: "desc" },
-        where: queryObject,
         skip: (parsedPage - 1) * parsedLimit,
+        take: parsedLimit, // Limit the number of results
       });
-      return res.status(200).json({ user });
+  
+      // Optionally, get total count for pagination metadata
+      const totalUsers = await prisma.user.count({ where });
+  
+      return res.status(200).json({
+        users,
+        totalUsers,
+        currentPage: parsedPage,
+        totalPages: Math.ceil(totalUsers / parsedLimit),
+      });
     } catch (error) {
       console.error("Get Users error:", error);
-      return res.status(500).json({ error: "Failed to fetch Users" });
+      return res.status(500).json({ error: "Failed to fetch users" });
     }
   }
 
