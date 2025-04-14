@@ -93,9 +93,10 @@ enum treatmentGoalsStatus{
 }
 
 enum MessageSentStatus {
-  DELIVERED
+ PENDING
   SENT
-  READ
+  DELIVERED
+  FAILED
 }
 
 enum contactedStatus {
@@ -191,8 +192,7 @@ model Message {
   id          String   @id @default(uuid())
   body String
   subject String?
-  image String? 
-  room  String?
+  image String[]
   toUserId String
   status MessageSentStatus?
 

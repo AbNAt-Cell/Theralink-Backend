@@ -3,11 +3,10 @@ import prisma from "../config/database";
 export class MessageService {
   async createMessageService(
     body: string,
-    subject: string,
     userId: string,
     conversationId: string,
     toUserId: string,
-    image?: string
+    image: string[]
   ) {
     // Validating sender (userId) exists
     const sender = await prisma.user.findUnique({
@@ -35,7 +34,6 @@ export class MessageService {
     const newMessage = await prisma.message.create({
       data: {
         body,
-        subject,
         userId,
         toUserId,
         conversationId,

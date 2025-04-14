@@ -30,8 +30,7 @@ export class ConversationController {
         },
       });
       if (conflictingConversation) {
-        return res.status(400).json({
-          error: "Conversation already exists",
+        return res.status(200).json({
           conversation: conflictingConversation,
         });
       }

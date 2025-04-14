@@ -11,17 +11,17 @@ export default function setupMessageSocket(io: Server) {
     socket.on("register_user", async ({ userId }) => {
       await redisClient.set(`active_users:${userId}`, socket.id);
       socket.join(`user:${userId}`); // join a room
-      io.emit("user_joined", `The user with ${userId} has been connected`)
+      io.emit("user_joined", `The user with ${userId} has been connected`);
     });
 
     // Send dm Event
     socket.on("send_dm", async (data) => {
-      const { toUserId, body, userId, subject, conversationId, image } = data;
+      // console.log("socket data:", data);
+      const { toUserId, body, userId, conversationId, image } = data;
       const toSockerUserId = await redisClient.get(`active_users:${toUserId}`);
       const messageservice = new MessageService();
       let message = await messageservice.createMessageService(
         body,
-        subject,
         userId,
         conversationId,
         toUserId,
