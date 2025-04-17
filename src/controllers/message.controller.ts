@@ -1,4 +1,5 @@
 import { Request as ExpressRequest, Response } from "express";
+import moment from "moment";
 import prisma from "../config/database";
 import { IUser } from "../interfaces/auth.interfaces";
 import { MessageService } from "../services/message.service";
@@ -37,6 +38,7 @@ export class MessageController {
           },
           data: {
             lastMessage: body,
+            updatedAt: moment(Date.now()).format("DDD MMM YYY"),
           },
         });
       }
@@ -68,7 +70,7 @@ export class MessageController {
       const Messages = await prisma.message.findMany({
         orderBy: { createdAt: "desc" },
         where: {
-          conversationId:req.params.conversationId,
+          conversationId: req.params.conversationId,
           isDeleted: false,
         },
         skip: (parsedPage - 1) * parsedLimit,
@@ -199,14 +201,14 @@ export class MessageController {
     }
   }
 
-   /**
+  /**
    * @description Mark Message As Read
    * @param req
    * @param res
    * @method PUT
    * @returns
    */
-   async markMessageAsImportant(req: CustomInterface, res: Response) {
+  async markMessageAsImportant(req: CustomInterface, res: Response) {
     try {
       const { id } = req.params;
       const user = req.user as IUser;
