@@ -1,12 +1,11 @@
 import prisma from "../config/database";
 
-// interface MessageCounts {
-//   total_messages: number | string; // SQL might return string for big numbers
-//   read_messages: number | string;
-//   unread_messages: number | string;
-//   inbox_messages: number | string;
-//   important_messages: number | string;
-// }
+interface MessageFilters {
+  isRead?: boolean;
+  isImportant?: boolean;
+  isSpam?: boolean;
+  isDeleted?: boolean;
+}
 export class MessageService {
   async createMessageService(
     body: string,
@@ -199,22 +198,42 @@ export class MessageService {
   //     importantMessages,
   //   };
   // }
-  async getUserMessageCounts(userId: string) {
+ 
+  
+  async getUserMessageCounts(userId: string, filters: MessageFilters = {}) {
     // Validate user exists
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
-
+  
     if (!user) {
       throw new Error(`User with ID ${userId} does not exist`);
     }
-
-    // Fetch all relevant messages with necessary fields
+  
+    // Build where clause with filters
+    const whereClause: any = {
+      OR: [{ userId }, { toUserId: userId }],
+    };
+  
+    // Apply filters if provided
+    if (filters.isRead !== undefined) {
+      whereClause.isRead = filters.isRead;
+    }
+    if (filters.isImportant !== undefined) {
+      whereClause.isImportant = filters.isImportant;
+    }
+    if (filters.isSpam !== undefined) {
+      whereClause.isSpam = filters.isSpam;
+    }
+    if (filters.isDeleted !== undefined) {
+      whereClause.isDeleted = filters.isDeleted;
+    } else {
+      whereClause.isDeleted = false; // Default to excluding deleted messages
+    }
+  
+    // Fetch filtered messages
     const messages = await prisma.message.findMany({
-      where: {
-        OR: [{ userId }, { toUserId: userId }],
-        isDeleted: false,
-      },
+      where: whereClause,
       select: {
         userId: true,
         toUserId: true,
@@ -222,12 +241,10 @@ export class MessageService {
         isImportant: true,
       },
     });
-
+  
     // Compute counts in memory
     const totalMessages = messages.length;
-    const inboxMessages = messages.filter(
-      (msg) => msg.toUserId === userId
-    ).length;
+    const inboxMessages = messages.filter((msg) => msg.toUserId === userId).length;
     const readMessages = messages.filter(
       (msg) => msg.toUserId === userId && msg.isRead
     ).length;
@@ -237,13 +254,14 @@ export class MessageService {
     const importantMessages = messages.filter(
       (msg) => msg.toUserId === userId && msg.isImportant
     ).length;
-
+  
     return {
       totalMessages,
       readMessages,
       unreadMessages,
       inboxMessages,
       importantMessages,
+      messages
     };
   }
 }

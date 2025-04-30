@@ -3,6 +3,7 @@ import moment from "moment";
 import prisma from "../config/database";
 import { IUser } from "../interfaces/auth.interfaces";
 import { MessageService } from "../services/message.service";
+// import { Message } from "@prisma/client";
 interface CustomInterface extends ExpressRequest {
   user?: IUser;
 }
@@ -155,27 +156,56 @@ export class MessageController {
   async getUserMessage(req: CustomInterface, res: Response) {
     try {
       const user = req.user as IUser;
+      const { isRead, isImportant, isSpam, isDeleted } = req.query;
 
-      const message = new MessageService();
+      // Validate user
+      if (!user?.id) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      // Parse query parameters as booleans
+      const filters = {
+        isRead:
+          isRead === "true" ? true : isRead === "false" ? false : undefined,
+        isImportant:
+          isImportant === "true"
+            ? true
+            : isImportant === "false"
+            ? false
+            : undefined,
+        isSpam:
+          isSpam === "true" ? true : isSpam === "false" ? false : undefined,
+        isDeleted:
+          isDeleted === "true"
+            ? true
+            : isDeleted === "false"
+            ? false
+            : undefined,
+      };
+
+      const messageService = new MessageService();
       const {
         totalMessages,
         readMessages,
         unreadMessages,
         inboxMessages,
         importantMessages,
-      } = await message.getUserMessageCounts(user?.id);
+      } = await messageService.getUserMessageCounts(user.id, filters);
 
       return res.status(200).json({
-        message: "Message fetched successfully",
+        message: "Message counts fetched successfully",
         totalMessages,
         readMessages,
         unreadMessages,
         inboxMessages,
         importantMessages,
       });
-    } catch (error) {
-      console.error("update message error:", error);
-      return res.status(500).json({ error: "Failed to get message" });
+    } catch (error: any) {
+      console.error("Get message counts error:", {
+        message: error.message,
+        stack: error.stack,
+      });
+      return res.status(500).json({ error: "Failed to fetch message counts" });
     }
   }
 
