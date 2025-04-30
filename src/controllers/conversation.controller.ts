@@ -1,7 +1,7 @@
 import { Request as ExpressRequest, Response } from "express";
 import prisma from "../config/database";
 import { IUser } from "../interfaces/auth.interfaces";
-import { MessageService } from "src/services/message.service";
+// import { MessageService } from "src/services/message.service";
 interface CustomInterface extends ExpressRequest {
   user?: IUser;
 }
@@ -14,28 +14,57 @@ export class ConversationController {
    * @method POST
    * @returns
    */
-  // 8cc773ea-1eb3-49e7-a876-b3c44ff3c0ff
   async createConversation(req: CustomInterface, res: Response) {
     try {
       const { lastMessage } = req.body;
       const { patientid } = req.params;
       const user = req.user as IUser;
 
-      // Checking if there's an existing Conversation at the same time for a particular patient
+      // Validate patient exists
+      const patient = await prisma.user.findUnique({
+        where: { id: patientid },
+      });
+      if (!patient) {
+        return res.status(400).json({ error: "Patient not found" });
+      }
+
+      // Checking for existing conversation with exactly these two participants
       const conflictingConversation = await prisma.conversation.findFirst({
         where: {
-          participants: {
-            every: { userId: { in: [user?.id, patientid] } },
-            some: { userId: user.id },
-          },
+          AND: [
+            {
+              participants: {
+                some: { userId: user.id },
+              },
+            },
+            {
+              participants: {
+                some: { userId: patientid },
+              },
+            },
+            {
+              participants: {
+                none: {
+                  userId: {
+                    notIn: [user.id, patientid],
+                  },
+                },
+              },
+            },
+          ],
+        },
+        include: {
+          participants: true,
         },
       });
+
       if (conflictingConversation) {
         return res.status(200).json({
           conversation: conflictingConversation,
         });
       }
 
+      // Create new conversation
       const newConversation = await prisma.conversation.create({
         data: {
           lastMessage: lastMessage || "New conversation",
@@ -47,14 +76,13 @@ export class ConversationController {
 
       return res.status(201).json({
         message: "Conversation created successfully",
-        Conversation: newConversation,
+        conversation: newConversation,
       });
     } catch (error) {
       console.error("Create Conversation error:", error);
-      return res.status(500).json({ error: "Failed to create Conversation" });
+      return res.status(500).json({ error: "Failed to create conversation" });
     }
   }
-
   /**
    * @description Get All Conversation of a User
    * @param req
@@ -76,11 +104,17 @@ export class ConversationController {
         take: parsedLimit,
         include: {
           participants: {
+            where: {
+              userId: {
+                not: user?.id,
+              },
+            },
             select: {
               user: {
                 select: {
                   role: true,
-                  username:true
+                  lastName: true,
+                  firstName: true,
                 },
               },
             },

@@ -60,6 +60,11 @@ app.use(
   })
 );
 
+
+app.get("/", (_req, res) => {
+  res.json({ status: "API is running" });
+});
+
 app.use(express.json());
 
 // Routes
@@ -96,9 +101,6 @@ app.use("/api/conversations", conversationRoutes);
 app.use("/api/users", userRoutes);
 setupMessageSocket(io)
 
-app.get("/", (_req, res) => {
-  res.json({ status: "API is running" });
-});
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 

@@ -67,7 +67,7 @@ export class MessageController {
     const parsedPage = Math.max(1, parseInt(page as string, 10));
     const parsedLimit = Math.max(1, parseInt(limit as string, 10));
     try {
-      const Messages = await prisma.message.findMany({
+      const messages = await prisma.message.findMany({
         orderBy: { createdAt: "desc" },
         where: {
           conversationId: req.params.conversationId,
@@ -83,7 +83,7 @@ export class MessageController {
         totalCount,
         totalPages: Math.ceil(totalCount / parsedLimit),
         currentPage: parsedPage,
-        Messages,
+        messages,
       });
     } catch (error) {
       console.error("Get Messages error:", error);
@@ -166,7 +166,7 @@ export class MessageController {
       } = await message.getUserMessageCounts(user?.id);
 
       return res.status(200).json({
-        message: "Message updated successfully",
+        message: "Message fetched successfully",
         totalMessages,
         readMessages,
         unreadMessages,
@@ -175,7 +175,7 @@ export class MessageController {
       });
     } catch (error) {
       console.error("update message error:", error);
-      return res.status(500).json({ error: "Failed to update message" });
+      return res.status(500).json({ error: "Failed to get message" });
     }
   }
 

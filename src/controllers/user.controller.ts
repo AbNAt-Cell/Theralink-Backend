@@ -75,7 +75,7 @@ export class UserController {
   }
 
   async updateUser(req: Request, res: Response) {
-    try {
+    try { 
       const { id } = req.params;
       const userExist = await prisma.user.findUnique({
         where: { id },

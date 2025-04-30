@@ -34,7 +34,9 @@ export class AuthController {
         email,
         role,
         prisma,
-        true
+        true,
+        "",
+        ""
       );
       return res.status(201).json({
         user: {

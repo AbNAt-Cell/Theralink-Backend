@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserController } from "../controllers/user.controller";
 import { validateRequest } from "../middleware/validate.middleware";
-import { userSchema } from "../validators/user.validator";
+import {updateuserSchema } from "../validators/user.validator";
 import { authenticate, authorize } from "../middleware/auth.middleware";
 
 const router = Router();
@@ -15,7 +15,7 @@ router.get(
 
 // Route to get all Users
 router.get(
-  "/:userId",
+  "/:id",
   authenticate,
   authorize("ADMIN", "STAFF"),
   (req, res) => void controller.getUserById(req, res)
@@ -23,16 +23,16 @@ router.get(
 
 // Route to Update specific user
 router.put(
-  "/:userId",
+  "/:id",
   authenticate,
   authorize("ADMIN", "STAFF"),
-  validateRequest(userSchema),
+  validateRequest(updateuserSchema),
   (req, res) => void controller.updateUser(req, res)
 );
 
 // Route to delete a specific user
 router.delete(
-  "/:userId",
+  "/:id",
   authenticate,
   authorize("ADMIN"),
   (req, res) => void controller.deleteUser(req, res)
@@ -122,17 +122,17 @@ export default router;
  *                   type: string
  *                   example: Failed to fetch Users
  *
- * /api/users/{userId}:
+ * /api/users/{id}:
  *   get:
  *     tags: [Users]
  *     summary: Get a specific Users by his or her ID
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID 
+ *         description: ID
  *       - in: path
  *         name: id
  *         required: true
@@ -148,11 +148,11 @@ export default router;
  *     summary: Update Users record
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID 
+ *         description: ID
  *       - in: path
  *         name: id
  *         required: true
@@ -185,11 +185,11 @@ export default router;
  *     summary: Delete a specific Users record
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID 
+ *         description: ID
  *       - in: path
  *         name: id
  *         required: true
