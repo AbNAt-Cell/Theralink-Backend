@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 export const signupSchema = Joi.object({
     email: Joi.string().email().required(),
-    role: Joi.string().valid('ADMIN', 'CLIENT').required()
+    role: Joi.string().valid('ADMIN', 'CLIENT', "STAFF").required()
 });
 
 export const loginSchema = Joi.object({

@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import prisma from "../config/database";
 
 interface MessageFilters {
@@ -5,7 +6,9 @@ interface MessageFilters {
   isImportant?: boolean;
   isSpam?: boolean;
   isDeleted?: boolean;
+  role?: Role;
 }
+
 export class MessageService {
   async createMessageService(
     body: string,
@@ -117,10 +120,11 @@ export class MessageService {
     return newMessage;
   }
 
-  async getAllMessageService(id: string) {
+  async getAllMessageService(id: string, userId: string) {
     const newMessage = await prisma.message.findMany({
       where: {
         conversationId: id,
+        userId,
       },
     });
 
@@ -198,24 +202,90 @@ export class MessageService {
   //     importantMessages,
   //   };
   // }
- 
-  
+
+  // async getUserMessageCounts(userId: string, filters: MessageFilters = {}) {
+  //   // Validate user exists
+  //   const user = await prisma.user.findUnique({
+  //     where: { id: userId },
+  //   });
+
+  //   if (!user) {
+  //     throw new Error(`User with ID ${userId} does not exist`);
+  //   }
+
+  //   // Build where clause with filters
+  //   const whereClause: any = {
+  //     OR: [{ userId }, { toUserId: userId }],
+  //   };
+
+  //   // Apply filters if provided
+  //   if (filters.isRead !== undefined) {
+  //     whereClause.isRead = filters.isRead;
+  //   }
+  //   if (filters.isImportant !== undefined) {
+  //     whereClause.isImportant = filters.isImportant;
+  //   }
+  //   if (filters.isSpam !== undefined) {
+  //     whereClause.isSpam = filters.isSpam;
+  //   }
+  //   if (filters.isDeleted !== undefined) {
+  //     whereClause.isDeleted = filters.isDeleted;
+  //   } else {
+  //     whereClause.isDeleted = false; // Default to excluding deleted messages
+  //   }
+
+  //   // Fetch filtered messages
+  //   const messages = await prisma.message.findMany({
+  //     where: whereClause,
+  //     select: {
+  //       userId: true,
+  //       toUserId: true,
+  //       isRead: true,
+  //       isImportant: true,
+  //     },
+  //   });
+
+  //   // Compute counts in memory
+  //   const totalMessages = messages.length;
+  //   const inboxMessages = messages.filter((msg) => msg.toUserId === userId).length;
+  //   const readMessages = messages.filter(
+  //     (msg) => msg.toUserId === userId && msg.isRead
+  //   ).length;
+  //   const unreadMessages = messages.filter(
+  //     (msg) => msg.toUserId === userId && !msg.isRead
+  //   ).length;
+  //   const importantMessages = messages.filter(
+  //     (msg) => msg.toUserId === userId && msg.isImportant
+  //   ).length;
+
+  //   return {
+  //     totalMessages,
+  //     readMessages,
+  //     unreadMessages,
+  //     inboxMessages,
+  //     importantMessages,
+  //     messages
+  //   };
+  // }
+
   async getUserMessageCounts(userId: string, filters: MessageFilters = {}) {
+    console.log("Filter query paramter:", filters);
     // Validate user exists
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
-  
+
     if (!user) {
       throw new Error(`User with ID ${userId} does not exist`);
     }
-  
-    // Build where clause with filters
+
+    // Build base where clause
     const whereClause: any = {
       OR: [{ userId }, { toUserId: userId }],
+      isDeleted: filters.isDeleted ?? false,
     };
-  
-    // Apply filters if provided
+
+    // Apply additional filters if provided
     if (filters.isRead !== undefined) {
       whereClause.isRead = filters.isRead;
     }
@@ -225,43 +295,80 @@ export class MessageService {
     if (filters.isSpam !== undefined) {
       whereClause.isSpam = filters.isSpam;
     }
-    if (filters.isDeleted !== undefined) {
-      whereClause.isDeleted = filters.isDeleted;
-    } else {
-      whereClause.isDeleted = false; // Default to excluding deleted messages
+
+    // If role filter is provided, apply it to the sender or recipient
+    if (filters.role !== undefined) {
+      whereClause.OR = [
+        { userId, user: { role: filters.role } },
+        { toUserId: userId, user: { role: filters.role } },
+      ];
     }
-  
-    // Fetch filtered messages
+
+    console.log("Where clause paramter:", whereClause);
+
+    // Fetch counts using Prisma's count queries
+    const [
+      totalMessages,
+      inboxMessages,
+      readMessages,
+      unreadMessages,
+      importantMessages,
+    ] = await Promise.all([
+      // Total messages (sent or received)
+      prisma.message.count({ where: whereClause }),
+      // Inbox messages (received by user)
+      prisma.message.count({
+        where: { ...whereClause, toUserId: userId },
+      }),
+      // Read messages (received by user)
+      prisma.message.count({
+        where: { ...whereClause, toUserId: userId, isRead: true },
+      }),
+      // Unread messages (received by user)
+      prisma.message.count({
+        where: { ...whereClause, toUserId: userId, isRead: false },
+      }),
+      // Important messages (received by user)
+      prisma.message.count({
+        where: { ...whereClause, toUserId: userId, isImportant: true },
+      }),
+    ]);
+
+    // fetchine the message list
     const messages = await prisma.message.findMany({
       where: whereClause,
       select: {
-        userId: true,
-        toUserId: true,
+        id: true,
+        body: true,
         isRead: true,
         isImportant: true,
+        isDeleted: true,
+        userId: true,
+        toUserId: true,
+        user: { select: { role: true, firstName: true, lastName: true } },
+        createdAt: true,
       },
+      orderBy: { createdAt: "desc" },
     });
-  
-    // Compute counts in memory
-    const totalMessages = messages.length;
-    const inboxMessages = messages.filter((msg) => msg.toUserId === userId).length;
-    const readMessages = messages.filter(
-      (msg) => msg.toUserId === userId && msg.isRead
-    ).length;
-    const unreadMessages = messages.filter(
-      (msg) => msg.toUserId === userId && !msg.isRead
-    ).length;
-    const importantMessages = messages.filter(
-      (msg) => msg.toUserId === userId && msg.isImportant
-    ).length;
-  
+
+    // Grouping messages by role
+    const messagesByRole = messages.reduce((acc, msg) => {
+      const role = msg.user.role;
+      if (!acc[role]) {
+        acc[role] = [];
+      }
+      acc[role].push(msg);
+      return acc;
+    }, {} as Record<Role, any[]>);
+
     return {
       totalMessages,
+      inboxMessages,
       readMessages,
       unreadMessages,
-      inboxMessages,
       importantMessages,
-      messages
+      messagesByRole,
+      messages,
     };
   }
 }

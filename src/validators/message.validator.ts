@@ -1,7 +1,7 @@
 import { MessageSentStatus } from "@prisma/client";
 import Joi from "joi";
 export const messageSchema = Joi.object({
-  body: Joi.string().required(),
+  body: Joi.string().min(6).max(250).required(),
   subject: Joi.string().required(),
   isRead: Joi.boolean().required(),
   isImportant: Joi.boolean().required(),

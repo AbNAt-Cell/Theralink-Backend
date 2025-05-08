@@ -3,6 +3,7 @@ import moment from "moment";
 import prisma from "../config/database";
 import { IUser } from "../interfaces/auth.interfaces";
 import { MessageService } from "../services/message.service";
+import { Role } from "@prisma/client";
 // import { Message } from "@prisma/client";
 interface CustomInterface extends ExpressRequest {
   user?: IUser;
@@ -80,6 +81,7 @@ export class MessageController {
       const totalCount = await prisma.message.count({
         where: { userId: user?.id },
       });
+      // 9c7faa8a-0f4c-44ea-ab6c-2053816c1396
       return res.status(200).json({
         totalCount,
         totalPages: Math.ceil(totalCount / parsedLimit),
@@ -156,7 +158,7 @@ export class MessageController {
   async getUserMessage(req: CustomInterface, res: Response) {
     try {
       const user = req.user as IUser;
-      const { isRead, isImportant, isSpam, isDeleted } = req.query;
+      const { isRead, isImportant, isSpam, isDeleted, role } = req.query;
 
       // Validate user
       if (!user?.id) {
@@ -164,7 +166,13 @@ export class MessageController {
       }
 
       // Parse query parameters as booleans
-      const filters = {
+      const filters: {
+        isRead?: boolean;
+        isImportant?: boolean;
+        isSpam?: boolean;
+        isDeleted?: boolean;
+        role?: Role;
+      } = {
         isRead:
           isRead === "true" ? true : isRead === "false" ? false : undefined,
         isImportant:
@@ -181,7 +189,16 @@ export class MessageController {
             : isDeleted === "false"
             ? false
             : undefined,
+        role: undefined,
       };
+
+      if (role) {
+        const roleValue = (role as string).toUpperCase() as Role;
+        if (!Object.values(Role).includes(roleValue)) {
+          return res.status(400).json({ error: `Invalid role: ${role}` });
+        }
+        filters.role = roleValue;
+      }
 
       const messageService = new MessageService();
       const {
@@ -190,15 +207,19 @@ export class MessageController {
         unreadMessages,
         inboxMessages,
         importantMessages,
+        messages,
+        messagesByRole,
       } = await messageService.getUserMessageCounts(user.id, filters);
 
       return res.status(200).json({
-        message: "Message counts fetched successfully",
+        message: "Message counts has been fetched successfully",
         totalMessages,
         readMessages,
         unreadMessages,
         inboxMessages,
         importantMessages,
+        messages,
+        messagesByRole,
       });
     } catch (error: any) {
       console.error("Get message counts error:", {
