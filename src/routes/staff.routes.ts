@@ -2,14 +2,14 @@ import { Router } from 'express';
 import { StaffController } from '../controllers/staff.controller';
 import { validateRequest } from '../middleware/validate.middleware';
 import { staffSchema } from '../validators/staff.validator';
-import { authenticate } from '../middleware/auth.middleware';
+import { authenticate, authorize } from '../middleware/auth.middleware';
 
 const router = Router();
 const controller = new StaffController();
 
-router.post('/', authenticate, validateRequest(staffSchema), (req, res) => void controller.createStaff(req, res));
-router.get('/',authenticate, (req, res) => void controller.getStaffs(req, res));
-router.get('/:id',authenticate, (req, res) => void controller.getStaffById(req, res));
+router.post('/', authenticate, authorize("ADMIN"), validateRequest(staffSchema), (req, res) => void controller.createStaff(req, res));
+router.get('/',authenticate,authorize("ADMIN"), (req, res) => void controller.getStaffs(req, res));
+router.get('/:id',authenticate,authorize("ADMIN"), (req, res) => void controller.getStaffById(req, res));
 router.put('/:id',authenticate, validateRequest(staffSchema), (req, res) => void controller.updateStaff(req, res));
 router.delete('/:id',authenticate, (req, res) => void controller.deleteStaff(req, res));
 
