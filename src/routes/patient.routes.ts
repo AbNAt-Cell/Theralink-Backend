@@ -15,6 +15,7 @@ router.delete('/:id',authenticate, (req, res) => void controller.deletePatient(r
 
 export default router;
 
+
 /**
  * @swagger
  * /api/patients:

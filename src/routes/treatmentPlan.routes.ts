@@ -17,7 +17,7 @@ router.post(
 );
 
 // Route to get all TreatmentPlans for a patient
-router.get("/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.get("/:patientid", authenticate, authorize("ADMIN", "CLIENT"), (req, res) =>
   controller.getTreatmentPlans(req, res)
 );
 

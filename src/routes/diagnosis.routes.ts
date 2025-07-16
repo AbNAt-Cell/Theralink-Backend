@@ -15,7 +15,7 @@ router.post(
 );
 
 // Route to get all Diagnosiss for a patient
-router.get("/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
+router.get("/:patientid", authenticate, authorize("ADMIN", "CLIENT"), (req, res) =>
   controller.getDiagnosiss(req, res)
 );
 
