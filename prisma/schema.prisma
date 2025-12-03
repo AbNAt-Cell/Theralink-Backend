@@ -148,6 +148,13 @@ enum BehaviouralAddictionType {
   WORK_ADDICTION
 }
 
+enum SmokingStatus {
+  SMOKER
+  NON_SMOKER
+  FORMER_SMOKER
+  NA
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -165,13 +172,33 @@ model User {
   // Relations
   appointments  Appointment[] 
   conversations  ConversationParticipant[]
+  
   sentMessages  Message[] @relation("SentMessages")   
   receivedMessages Message[] @relation("ToUserRelation") 
+  
   patient       Patient?  @relation("UserToPatient")
   patientId     String?   @unique
 
   staff      Staff?  @relation("UserToStaff")
   staffId     String?   @unique
+}
+
+model Clinic {
+  id           String @id @default(uuid())
+  clinicName   String
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  state        String?
+  zipCode      String?
+  phoneNumber  String?
+  logoUrl      String?
+  email        String?
+  website      String?
+
+  admins AdminProfile[]
+  staff  StaffProfile[]
+  clients ClientProfile[]
 }
 
 model Conversation {
@@ -193,7 +220,6 @@ model ConversationParticipant {
   joinedAt       DateTime     @default(now())
   @@id([conversationId, userId]) 
 }
-
 
 model Message {
   id          String   @id @default(uuid())
@@ -250,7 +276,6 @@ model Staff {
   user          User?     @relation(name:"UserToStaff", fields: [userId], references: [id])
 }
 
-
 model StaffSignature {
   id                String       @id @default(uuid())
   signature    String    
@@ -298,8 +323,6 @@ model StaffFile {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
-
-
 
 
 model Patient {
@@ -758,7 +781,6 @@ model Discharge {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
-
 
 model MedicalHistory {
   id          String   @id @default(uuid())

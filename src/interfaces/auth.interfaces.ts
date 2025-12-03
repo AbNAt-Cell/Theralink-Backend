@@ -1,23 +1,28 @@
 export interface IUser {
-    id: string;
-    email: string;
-    username: string;
-    role: 'ADMIN' | 'CLIENT' | 'STAFF';
-    createdAt: Date;
-    updatedAt: Date;
+  id: string;
+  email: string;
+  username: string;
+  role: "ADMIN" | "CLIENT" | "STAFF";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface JwtUser {
+  id: string;
+  role: "ADMIN" | "CLIENT" | "STAFF";
 }
 
 export interface ILoginRequest {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
 }
 
 export interface ISignupRequest {
-    email: string;
-    role: 'ADMIN' | 'CLIENT' | 'STAFF';
+  email: string;
+  role: "ADMIN" | "CLIENT" | "STAFF";
 }
 
 export interface IAuthResponse {
-    user: Omit<IUser, 'password'>;
-    token: string;
+  user: Omit<IUser, "password">;
+  token: string;
 }
