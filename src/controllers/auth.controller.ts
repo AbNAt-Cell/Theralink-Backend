@@ -1,10 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
-import {
-  hashPassword,
-  comparePasswords,
-  generateToken,
-} from "../utils/auth.utils";
+import { hashPassword, comparePasswords, generateToken } from "../utils/auth.utils";
 import { ILoginRequest, ISignupRequest } from "../interfaces/auth.interfaces";
 import { EmailService } from "../services/email.service";
 import { generateResetToken } from "../utils/auth.utils";
@@ -18,10 +14,7 @@ export class AuthController {
     // console.log("Email service initialized");
   }
 
-  signup = async (
-    req: Request<{}, {}, ISignupRequest>,
-    res: Response
-  ): Promise<Response> => {
+  signup = async (req: Request<{}, {}, ISignupRequest>, res: Response): Promise<Response> => {
     try {
       const { email, role } = req.body;
 
@@ -30,14 +23,7 @@ export class AuthController {
         return res.status(400).json({ error: "Email already registered" });
       }
 
-      const { user, token, username, password } = await signupService(
-        email,
-        role,
-        prisma,
-        true,
-        "",
-        ""
-      );
+      const { user, token, username, password } = await signupService(email, role, prisma, true, "", "");
       return res.status(201).json({
         user: {
           id: user.id,
@@ -58,10 +44,8 @@ export class AuthController {
       return res.status(500).json({ error: "Failed to create user" });
     }
   };
-  login = async (
-    req: Request<{}, {}, ILoginRequest>,
-    res: Response
-  ): Promise<Response> => {
+
+  login = async (req: Request<{}, {}, ILoginRequest>, res: Response): Promise<Response> => {
     try {
       const { username, password } = req.body;
 
@@ -154,4 +138,23 @@ export class AuthController {
       return res.status(500).json({ error: "Failed to reset password" });
     }
   };
+
+  async me(req: Request, res: Response) {
+    try {
+      const userId = req?.loggedInUser?.id;
+
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          staff: true,
+          patient: true,
+        },
+      });
+
+      return res.status(200).json({ user });
+    } catch (error) {
+      console.error("ME route error:", error);
+      return res.status(500).json({ error: "Failed to fetch logged-in user" });
+    }
+  }
 }

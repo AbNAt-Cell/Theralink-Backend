@@ -1,42 +1,49 @@
-import { Router, Request, Response } from 'express';
-import { AuthController } from '../controllers/auth.controller';
-import { validateRequest } from '../middleware/validate.middleware';
-import { signupSchema, loginSchema, forgotPasswordSchema,resetPasswordSchema } from '../validators/auth.validator';
-
+import { Router, Request, Response } from "express";
+import { AuthController } from "../controllers/auth.controller";
+import { validateRequest } from "../middleware/validate.middleware";
+import { signupSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from "../validators/auth.validator";
+import { authenticate } from "src/middleware/auth.middleware";
+import { tokenBlacklist } from "src/utils/tokenBlacklist";
 
 const router = Router();
 const controller = new AuthController();
 
-router.post('/signup', 
-    validateRequest(signupSchema), 
-    (req: Request, res: Response): void => {
-        void controller.signup(req, res);
-    }
-);
+router.post("/signup", validateRequest(signupSchema), (req: Request, res: Response): void => {
+  void controller.signup(req, res);
+});
 
-router.post('/login', 
-    validateRequest(loginSchema), 
-    (req: Request, res: Response): void => {
-        void controller.login(req, res);
-    }
-);
+router.post("/login", validateRequest(loginSchema), (req: Request, res: Response): void => {
+  void controller.login(req, res);
+});
 
-router.post(
-    '/forgot-password', 
-    validateRequest(forgotPasswordSchema), 
-    (req: Request, res: Response): void => {
-        void controller.forgotPassword(req, res);
-    }
-);
+router.post("/forgot-password", validateRequest(forgotPasswordSchema), (req: Request, res: Response): void => {
+  void controller.forgotPassword(req, res);
+});
 
-router.post(
-    '/reset-password', 
-    validateRequest(resetPasswordSchema), 
-    (req: Request, res: Response): void => {
-        void controller.resetPassword(req, res);
-    }
-);
+router.post("/reset-password", validateRequest(resetPasswordSchema), (req: Request, res: Response): void => {
+  void controller.resetPassword(req, res);
+});
 
+// ====================== NEW: /me ======================
+// Returns logged-in user's profile (based on req.user from JWT)
+
+router.get("/me", authenticate, async (req, res, next) => {
+  try {
+    await controller.me(req, res);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ====================== NEW: /logout ======================
+// Blacklists JWT so it can’t be reused
+
+router.post("/logout", authenticate, async (req: Request, res: Response): Promise<void> => {
+  const token = req.token;
+  if (token) tokenBlacklist.add(token);
+
+  res.status(200).json({ message: "Logged out successfully" });
+});
 
 export default router;
 
@@ -75,39 +82,39 @@ export default router;
  *         updatedAt:
  *           type: string
  *           format: date-time
- * 
+ *
  *   securitySchemes:
  *     bearerAuth:
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
- * 
+ *
  * /api/auth/signup:
  *   post:
  *     tags: [Authentication]
  *     summary: Register a new user
  *     description: |
  *       Creates new user and sends credentials via email.
- *       
+ *
  *       Email Template:
  *       Subject: "Your Theralink Account Credentials"
- *       
+ *
  *       Format:
- * 
+ *
  *       Welcome to Theralink!
- * 
+ *
  *       Your account has been created successfully.
- * 
+ *
  *       Username: {username}
- * 
+ *
  *       Password: {password}
- * 
+ *
  *       Please login and change your password for security purposes.
- * 
+ *
  *       Best regards,
- * 
+ *
  *       Theralink Team
- *  
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -143,7 +150,7 @@ export default router;
  *                       type: string
  *                 token:
  *                   type: string
- * 
+ *
  * /api/auth/login:
  *   post:
  *     tags: [Authentication]
@@ -199,7 +206,7 @@ export default router;
  *     responses:
  *       200:
  *         description: Reset email sent successfully
- * 
+ *
  * /api/auth/reset-password:
  *   post:
  *     tags: [Authentication]
@@ -225,6 +232,3 @@ export default router;
  *       200:
  *         description: Password updated successfully
  */
-
-
-
