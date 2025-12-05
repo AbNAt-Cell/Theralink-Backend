@@ -6,37 +6,19 @@ import { authenticate, authorize } from "../middleware/auth.middleware";
 
 const router = Router();
 const controller = new DiagnosisController();
-router.post(
-  "/:patientid",
-  validateRequest(diagnosisSchema),
-  authenticate,
-  authorize("ADMIN"),
-  (req, res) => controller.createDiagnosis(req, res)
-);
+router.post("/:patientid", validateRequest(diagnosisSchema), authenticate, authorize("ADMIN"), (req, res) => controller.createDiagnosis(req, res));
 
 // Route to get all Diagnosiss for a patient
-router.get("/:patientid", authenticate, authorize("ADMIN", "CLIENT"), (req, res) =>
-  controller.getDiagnosiss(req, res)
-);
+router.get("/:patientid", authenticate, authorize("ADMIN", "CLIENT"), (req, res) => controller.getDiagnosis(req, res));
 
 // Route to get a specific Diagnosis by ID
-router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.getDiagnosisById(req, res)
-);
+router.get("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) => controller.getDiagnosisById(req, res));
 
 // Route to Update specific Diagnosis
-router.put(
-  "/:id/:patientid",
-  authenticate,
-  authorize("ADMIN"),
-  validateRequest(diagnosisSchema),
-  (req, res) => controller.updateDiagnosis(req, res)
-);
+router.put("/:id/:patientid", authenticate, authorize("ADMIN"), validateRequest(diagnosisSchema), (req, res) => controller.updateDiagnosis(req, res));
 
 // Route to delete a specific Diagnosis
-router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) =>
-  controller.deleteDiagnosis(req, res)
-);
+router.delete("/:id/:patientid", authenticate, authorize("ADMIN"), (req, res) => controller.deleteDiagnosis(req, res));
 
 export default router;
 

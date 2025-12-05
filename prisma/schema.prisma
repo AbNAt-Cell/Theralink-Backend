@@ -170,6 +170,7 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   // Relations
+  clinic        Clinic[]
   appointments  Appointment[] 
   conversations  ConversationParticipant[]
   
@@ -181,6 +182,7 @@ model User {
 
   staff      Staff?  @relation("UserToStaff")
   staffId     String?   @unique
+  
 }
 
 model Clinic {
@@ -195,10 +197,6 @@ model Clinic {
   logoUrl      String?
   email        String?
   website      String?
-
-  admins AdminProfile[]
-  staff  StaffProfile[]
-  clients ClientProfile[]
 }
 
 model Conversation {
@@ -324,7 +322,6 @@ model StaffFile {
   updatedAt    DateTime @updatedAt
 }
 
-
 model Patient {
   id            String    @id @default(uuid())
   firstName     String
@@ -393,7 +390,6 @@ model Appointment {
   updatedAt      DateTime @updatedAt
 }
 
-
 model Insurance {
   id            String     @id @default(uuid())
   insuranceType String   
@@ -409,7 +405,6 @@ model Insurance {
   patientId     String
   patient       Patient    @relation(fields: [patientId], references: [id],  onDelete: Cascade)
 }
-
 
 model Diagnosis {
   id          String    @id @default(uuid())
@@ -428,6 +423,7 @@ model Document {
   author   String
   client   String
   date   DateTime
+  
   patientId   String
   patient     Patient   @relation(fields: [patientId], references: [id],  onDelete: Cascade)
 
@@ -509,7 +505,6 @@ model Service {
   updatedAt   DateTime  @updatedAt
 }
 
-
 model Physician {
   id            String    @id @default(uuid())
   firstName     String
@@ -522,8 +517,6 @@ model Physician {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
-
-
 
 model Immunization {
   id           String   @id @default(uuid())
@@ -558,7 +551,6 @@ model PatientFile {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
-
 
 model ParentContact {
   id           String    @id @default(uuid())
@@ -604,7 +596,6 @@ model ContactNote {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
-
 
 model EducationBackground {
   id                 String       @id @default(uuid())

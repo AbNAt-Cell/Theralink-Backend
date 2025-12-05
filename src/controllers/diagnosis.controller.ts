@@ -29,7 +29,7 @@ export class DiagnosisController {
     }
   }
 
-  async getDiagnosiss(req: CustomRequest, res: Response): Promise<void> {
+  async getDiagnosis(req: CustomRequest, res: Response): Promise<void> {
     try {
       const { patientid } = req.params;
       const { page = "1", limit = "10" } = req.query;
