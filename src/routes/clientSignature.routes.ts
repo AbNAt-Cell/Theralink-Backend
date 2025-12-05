@@ -2,29 +2,16 @@ import { Router } from "express";
 import { ClientSignatureController } from "../controllers/clientSignature.controller";
 import { validateRequest } from "../middleware/validate.middleware";
 import { clientSignatureSchema } from "../validators/clientSignature.validator";
+import { authenticate } from "../middleware/auth.middleware";
 
 const router = Router();
 const controller = new ClientSignatureController();
 
-router.post(
-  "/",
-  validateRequest(clientSignatureSchema),
-  (req, res) => void controller.createClientSignature(req, res)
-);
+router.post("/", authenticate, validateRequest(clientSignatureSchema), (req, res) => void controller.createClientSignature(req, res));
 router.get("/", (req, res) => void controller.getClientSignatures(req, res));
-router.get(
-  "/:id",
-  (req, res) => void controller.getClientSignatureById(req, res)
-);
-router.put(
-  "/:id",
-  validateRequest(clientSignatureSchema),
-  (req, res) => void controller.updateClientSignature(req, res)
-);
-router.delete(
-  "/:id",
-  (req, res) => void controller.deleteClientSignature(req, res)
-);
+router.get("/:id", authenticate, (req, res) => void controller.getClientSignatureById(req, res));
+router.put("/:id", authenticate, validateRequest(clientSignatureSchema), (req, res) => void controller.updateClientSignature(req, res));
+router.delete("/:id", authenticate, (req, res) => void controller.deleteClientSignature(req, res));
 
 export default router;
 

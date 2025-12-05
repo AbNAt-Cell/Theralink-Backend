@@ -146,11 +146,17 @@ export class AuthController {
       const user = await prisma.user.findUnique({
         where: { id: userId },
         include: {
-          staff: true,
+          staff: {
+            include: {
+              staffSignature: true,
+            },
+          },
           patient: {
             include: {
               document: true,
               appointments: true,
+              clientSignature: true,
+              parentSignature: true,
             },
           },
         },

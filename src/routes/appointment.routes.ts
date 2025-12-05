@@ -1,16 +1,17 @@
-import { Router } from 'express';
-import { AppointmentController } from '../controllers/appointment.controller';
-import { validateRequest } from '../middleware/validate.middleware';
-import { appointmentSchema } from '../validators/appointment.validator';
+import { Router } from "express";
+import { AppointmentController } from "../controllers/appointment.controller";
+import { validateRequest } from "../middleware/validate.middleware";
+import { appointmentSchema } from "../validators/appointment.validator";
+import { authenticate } from "../middleware/auth.middleware";
 
 const router = Router();
 const controller = new AppointmentController();
 
-router.post('/', validateRequest(appointmentSchema), (req, res) => void controller.createAppointment(req, res));
-router.get('/', (req, res) => void controller.getAppointments(req, res));
-router.get('/:id', (req, res) => void controller.getAppointmentById(req, res));
-router.put('/:id', validateRequest(appointmentSchema), (req, res) => void controller.updateAppointment(req, res));
-router.delete('/:id', (req, res) => void controller.deleteAppointment(req, res));
+router.post("/", authenticate, validateRequest(appointmentSchema), (req, res) => void controller.createAppointment(req, res));
+router.get("/", authenticate, (req, res) => void controller.getAppointments(req, res));
+router.get("/:id", authenticate, (req, res) => void controller.getAppointmentById(req, res));
+router.put("/:id", authenticate, validateRequest(appointmentSchema), (req, res) => void controller.updateAppointment(req, res));
+router.delete("/:id", authenticate, (req, res) => void controller.deleteAppointment(req, res));
 
 export default router;
 
@@ -23,7 +24,7 @@ export default router;
  *     responses:
  *       200:
  *         description: List of appointment retrieved successfully
- * 
+ *
  *   post:
  *     tags: [Appointment]
  *     summary: Create new patient
@@ -40,7 +41,7 @@ export default router;
  *               date:
  *                 type: string
  *                 format: date
- * 
+ *
  * /api/appointment/{id}:
  *   get:
  *     tags: [Appointment]
@@ -51,7 +52,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *   
+ *
  *   put:
  *     tags: [Appointment]
  *     summary: Update patient
@@ -61,7 +62,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
- *   
+ *
  *   delete:
  *     tags: [Appointment]
  *     summary: Delete patient
@@ -72,4 +73,3 @@ export default router;
  *         schema:
  *           type: string
  */
-
