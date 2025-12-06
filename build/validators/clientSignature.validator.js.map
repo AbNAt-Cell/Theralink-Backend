@@ -1,0 +1,1 @@
+{"version":3,"file":"clientSignature.validator.js","sourceRoot":"","sources":["../../src/validators/clientSignature.validator.ts"],"names":[],"mappings":";;;;;;AAAA,8CAAsB;AACT,QAAA,qBAAqB,GAAG,aAAG,CAAC,MAAM,CAAC;IAC9C,SAAS,EAAE,aAAG,CAAC,MAAM,EAAE,CAAC,QAAQ,EAAE;IAClC,GAAG,EAAE,aAAG,CAAC,MAAM,EAAE,CAAC,QAAQ,EAAE;CAC7B,CAAC,CAAC"}

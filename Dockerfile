@@ -1,19 +1,27 @@
-FROM node:18-alpine AS base
-WORKDIR /app
-COPY app ./app
-COPY package*.json ./
-
-RUN npm install
-
-FROM base AS build
-WORKDIR /app
-RUN npm run build
-
-FROM node:18-alpine AS production
-WORKDIR /app
-COPY package*.json ./
-
-RUN npm install --only=production
-COPY --from=base /app/src ./
-
-CMD [ "node", "./src/index.js" ]
+# --- Base Stage ---
+    FROM node:18-alpine AS base
+    WORKDIR /app
+    
+    # Install dependencies
+    COPY package*.json ./
+    RUN npm install
+    
+    # Copy all project files
+    COPY . .
+    
+    # Build TypeScript → JavaScript
+    RUN npm run build   # This creates /app/build
+    
+    
+    # --- Production Stage ---
+    FROM node:18-alpine AS production
+    WORKDIR /app
+    
+    COPY package*.json ./
+    RUN npm install --omit=dev
+    
+    # Copy compiled JS only (not TS)
+    COPY --from=base /app/build ./build
+    
+    # Start server
+    CMD ["node", "build/server.js"]    
