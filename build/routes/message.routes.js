@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const message_controller_1 = require("../controllers/message.controller");
+const validate_middleware_1 = require("../middleware/validate.middleware");
+const message_validator_1 = require("../validators/message.validator");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const router = (0, express_1.Router)();
+const controller = new message_controller_1.MessageController();
+router.get("/:conversationId", auth_middleware_1.authenticate, (req, res) => void controller.getMessages(req, res));
+router.get("/", auth_middleware_1.authenticate, (req, res) => void controller.getUserMessage(req, res));
+router.put("/:id", auth_middleware_1.authenticate, (0, validate_middleware_1.validateRequest)(message_validator_1.messageSchema), (req, res) => void controller.updateMessage(req, res));
+router.delete("/:id", auth_middleware_1.authenticate, (req, res) => void controller.deleteMessage(req, res));
+router.put("/:id/mark-as-unread", auth_middleware_1.authenticate, (req, res) => void controller.markMessageAsUnRead(req, res));
+router.put("/:id/mark-as-read", auth_middleware_1.authenticate, (req, res) => void controller.markMessageAsRead(req, res));
+router.put("/:id/mark-as-important", auth_middleware_1.authenticate, (req, res) => void controller.markMessageAsImportant(req, res));
+router.put("/:id/add-to-trash", auth_middleware_1.authenticate, (req, res) => void controller.addMessageToTrash(req, res));
+router.put("/:id/remove-from-trash", auth_middleware_1.authenticate, (req, res) => void controller.removeMessageFromTrash(req, res));
+router.put("/:id/mark-as-unimportant", auth_middleware_1.authenticate, (req, res) => void controller.markMessageAsUnImportant(req, res));
+exports.default = router;
+//# sourceMappingURL=message.routes.js.map

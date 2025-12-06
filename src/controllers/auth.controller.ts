@@ -139,7 +139,7 @@ export class AuthController {
     }
   };
 
-  async me(req: Request, res: Response) {
+  me = async (req: Request, res: Response) => {
     try {
       const userId = req?.loggedInUser?.id;
 
@@ -167,5 +167,5 @@ export class AuthController {
       console.error("ME route error:", error);
       return res.status(500).json({ error: "Failed to fetch logged-in user" });
     }
-  }
+  };
 }
