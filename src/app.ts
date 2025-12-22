@@ -51,7 +51,7 @@ const io = new Server(httpServer, {
 // Middleware
 //app.use(cors());
 if (!process.env.FRONTEND_URL) {
-  throw new Error("No FRONTEND_URl");
+  throw new Error("No FRONTEND_URL");
 }
 app.use(
   cors({

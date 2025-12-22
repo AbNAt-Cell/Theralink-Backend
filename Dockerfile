@@ -30,6 +30,12 @@
     # Install only production dependencies
     RUN npm install --omit=dev
     
+    # Install Prisma CLI temporarily to generate client (required for @prisma/client)
+    RUN npm install prisma@^5.22.0 --save-dev
+    
+    # Generate Prisma Client (required for runtime)
+    RUN npx prisma generate
+    
     # Copy compiled JS from build stage
     COPY --from=base /app/build ./build
     

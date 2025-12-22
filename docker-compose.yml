@@ -1,16 +1,18 @@
-version: '3'
+version: "3"
 
 networks:
- app-networks:
+  app-networks:
 services:
-   theralink:
+  theralink:
     container_name: "theralink"
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
-    
+
     ports:
-      - "4001:4001"
-    
+      - "4001:4000"
+    environment:
+      - PORT=4000
+
     env_file:
       - .env
